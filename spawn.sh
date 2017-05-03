@@ -133,31 +133,31 @@ check_exitcode
 # /usr/bin/virt-copy-in -d ${DISTRO}.${VM} keys/ssh_host* /etc/ssh/
 
 # /usr/bin/virt-copy-in -d ${DISTRO}.${VM} files/rc.local /etc/rc.local
-/usr/bin/virt-copy-in -d ${DISTRO}.${VM} $PWD/files/jenkins_authorized_keys /root
+# /usr/bin/virt-copy-in -d ${DISTRO}.${VM} $PWD/files/jenkins_authorized_keys /root
 
 # As a backup plan, we make sure that the guest will generate some host keys if none are present
 # ( after all, we removed the host keys in the golden image preparation script).
-/usr/bin/guestfish -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
-#!/bin/bash
-
-  if [ ! -d /root/.ssh ]; then
-    mkdir /root/.ssh
-  fi
-
-  cp /root/jenkins_authorized_keys /root/.ssh/authorized_keys
-  chmod 700 /root/.ssh
-  chmod 600 /root/.ssh/authorized_keys
-
-  if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
-     ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa > /dev/null 2>&1
-     ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa > /dev/null 2>&1
-  fi
-
-  ## This reload the selinux policy for rpm based distros
-  if [ -f /sbin/restorecon ]; then
-    /sbin/restorecon -R -v /root/.ssh
-  fi
-EOF
+##/usr/bin/guestfish -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
+##!/bin/bash
+#
+#  if [ ! -d /root/.ssh ]; then
+#    mkdir /root/.ssh
+#  fi
+#
+#  cp /root/jenkins_authorized_keys /root/.ssh/authorized_keys
+#  chmod 700 /root/.ssh
+#  chmod 600 /root/.ssh/authorized_keys
+#
+#  if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
+#     ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa > /dev/null 2>&1
+#     ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa > /dev/null 2>&1
+#  fi
+#
+#  ## This reload the selinux policy for rpm based distros
+#  if [ -f /sbin/restorecon ]; then
+#    /sbin/restorecon -R -v /root/.ssh
+#  fi
+#EOF
 
 #systemd...
 if [ $DISTRO = "centos7" ]; then
