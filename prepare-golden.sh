@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 DISTRO=$1
 CWD="/var/lib/libvirt/images"
 USER="sub"
