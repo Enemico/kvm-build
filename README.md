@@ -71,7 +71,7 @@ of the resulting images. Note that if at, AT ANY TIME, the golden images will be
 irreparable ways. You should not move the golden images to new locations in the filesystem for example. But is perfectly possible to decouple any of your spawned vms from the "commonly used" 
 golden image by running the consolidate.sh script on them, although it requires the instance to be shut down.
 
-#### #3 SPAWN THE VMS
+#### #3 Spawn the vms!
 
 Once the the golden images are ready, you can start spawning vms. 
 The script is very simple, and takes the distribution name and a user defined vm name as an argument.
@@ -85,7 +85,7 @@ run for example
 
 ./spawn.sh ubuntu16 frontend
 
-#### #4 NUKE A VM
+#### #4 Nuke'em 
 
 If you ever need to delete a machine, you can use the nuke.sh script. 
 It will destroy the machine, remove the configuration file, and delete the image, so nothing will be there afterwards. 
@@ -95,7 +95,7 @@ run for example
 
 ./nuke.sh ubuntu16.frontend
 
-#### #5 CONSOLIDATE A VM
+#### #5 Consolidate a vm image
 
 Run this script if you want to detach a vm from the golden image. 
 The vm should be powered off when running this command. It will dump the golden image and the vm image that is backing it into a new, independent image. 
@@ -105,7 +105,7 @@ run for example
 
 ./consolidate.sh centos7.backend
  
-#### #6 DETECT THE IP OF A VM
+#### #6 Detect the IP of a vm
 
 Run this script if you need to find out about which IP is assigned to a certain (running) vm. 
 
@@ -113,7 +113,7 @@ run for example
 
 ./detect.sh centos7.backend
 
-### LICENSE
+### LICENSE NOTE
 
 Most of the work to produce these scripts ( although these have been later on modified quite heavily ) i have done while working as an infrastructure engineer at Cfengine AS. 
 Before ending my professional relationship with the company, i have asked about the possibility to publish these scripts and received a positive response, as long as they 
