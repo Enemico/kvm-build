@@ -63,8 +63,6 @@ So we need to turn the "original" image into a "golden image", that is an image 
 run for example:
 
 ./prepare-golden.sh centos7
-./prepare-golden.sh debian8
-./prepare-golden.sh ubuntu16
 
 The script will automatically find the corresponding base installation image, copy it to a new file, clean up the installation from the previously named "identifiers", and adjust the permissions
 of the resulting images. Note that if at, AT ANY TIME, the golden images will be tampered with, ALL the vms that are using them as backing files will be affected in unpredictable and possibly
@@ -83,7 +81,7 @@ In the future should be possible to give RAM and CPU count as an argument, but n
 
 run for example
 
-./spawn.sh ubuntu16 frontend
+./spawn.sh centos7 frontend
 
 #### #4 Nuke'em 
 
@@ -93,7 +91,7 @@ It asks for confirmation.
 
 run for example
 
-./nuke.sh ubuntu16.frontend
+./nuke.sh centos7.frontend
 
 #### #5 Consolidate a vm image
 
