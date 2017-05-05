@@ -77,5 +77,33 @@ The script is very simple, and takes the distribution name and a user defined vm
 It establishes a new qcow2 image for the filesystem using the golden image as a backing file, clones the kvm configuration file, and boots the vm.
 Once the boot is complete and successful, an IP address is returned. You can then ssh in the new machine, or use "virsh console" to access the tty (in case there is some network problem). 
 
+TODO: at the moment the values for memory amount and CPU count are hardcoded. Once the machine is up, is possible to edit the xml file in /etc/libvirt/qemu and reboot. 
+In the future should be possible to give RAM and CPU count as an argument, but not yet. 
+
+run for example
+
+./spawn.sh ubuntu16 frontend
+
+### #4 NUKE A VM
+
+If you ever need to delete a machine, you can use the nuke.sh script. 
+It will destroy the machine, remove the configuration file, and delete the image, so nothing will be there afterwards. 
+It asks for confirmation. 
+
+run for example
+
+./nuke.sh ubuntu16.frontend
+
+### #5 CONSOLIDATE A VM
+
+Run this script if you want to detach a vm from the golden image. 
+The vm should be powered off when running this command. It will dump the golden image and the vm image that is backing it into a new, independent image. 
+Obviously the size of the result vm image will be a sum of the two. 
+
+run for example
+
+./consolidate.sh centos7.backend
+ 
+
 
 
