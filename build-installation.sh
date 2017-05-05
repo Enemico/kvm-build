@@ -77,7 +77,7 @@ case "$1" in
   -d8 | debian8 | d8)
     LOCATION='http://ftp.us.debian.org/debian/dists/jessie/main/installer-amd64/'
     PRESEED='./files/ks/debian_8_amd64/preseed_golden.cfg'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial' 
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed_golden.cfg' 
     OS='debian8'
     create_image
     create_instance
@@ -86,7 +86,7 @@ case "$1" in
 ### ubuntu 16
   -u16 | ubuntu16 | u16)
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/xenial/main/installer-amd64/'
-    PRESEED='preseed.cfg'
+    PRESEED='./files/ks/ubuntu_16_04_amd64/preseed.cfg'
     OS='ubuntu16.04'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     create_image
