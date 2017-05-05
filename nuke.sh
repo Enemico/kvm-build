@@ -9,7 +9,7 @@ check_original () {
   echo $VM > /tmp/name
   if [ `cat /tmp/name | grep -E 'original|golden'` ]; then
     echo "WARNING, you are asking me to nuke an original or golden image" 
-    read -rep $'Are you sure you want to continue?\n'
+    read -rep $'Are you sure you want to continue? y/n \n'
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
       echo "Aborted"
       exit 1
@@ -35,7 +35,7 @@ fi
 
 ### adding a confirmation step anyway
 echo "WARNING, this will destroy irreparably your machine $VM" 
-read -rep $'Are you sure you want to continue?\n'
+read -rep $'Are you sure you want to continue? y/n \n'
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   echo "Aborted"
   exit 1
