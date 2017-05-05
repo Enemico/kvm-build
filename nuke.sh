@@ -8,8 +8,8 @@ CWD="/var/lib/libvirt/images"
 check_original () {
   echo $VM > /tmp/name
   if [ `cat /tmp/name | grep -E 'original|golden'` ]; then
-    echo "WARNING, you are asking me to nuke an original or golden image"
-    read -p "Are you sure? " -n 1 -r
+    echo "WARNING, you are asking me to nuke an original or golden image" 
+    read -rep $'Are you sure?\n'
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
       echo "Aborted"
       exit 1
