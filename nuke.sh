@@ -9,7 +9,7 @@ check_original () {
   echo $VM > /tmp/name
   if [ `cat /tmp/name | grep -E 'original|golden'` ]; then
     echo "WARNING, you are asking me to nuke an original or golden image" 
-    read -rep $'Are you sure?\n'
+    read -rep $'Are you sure you want to continue?\n'
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
       echo "Aborted"
       exit 1
@@ -30,6 +30,14 @@ check_original
 check_existing
 if [ $? -ne "0" ]; then
   echo "No domain found named $VM found. Bailing out."
+  exit 1
+fi
+
+### adding a confirmation step anyway
+echo "WARNING, this will destroy irreparably your machine $VM" 
+read -rep $'Are you sure you want to continue?\n'
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+  echo "Aborted"
   exit 1
 fi
 
