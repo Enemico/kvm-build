@@ -76,8 +76,8 @@ case "$1" in
 ### debian 8
   -d8 | debian8 | d8)
     LOCATION='http://ftp.us.debian.org/debian/dists/jessie/main/installer-amd64/'
-    PRESEED='./files/ks/debian_8_amd64/preseed_golden.cfg'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed_golden.cfg' 
+    PRESEED='./files/ks/debian_8_amd64/preseed.cfg'
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg' 
     OS='debian8'
     create_image
     create_instance
