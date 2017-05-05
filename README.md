@@ -1,32 +1,35 @@
-## YOUR OWN, PERSONAL, CLOUD-ISH
+## KVM-BUILD
+
+A lightweight private cloud solution
 
 This set of scripts creates and administrates a set of Linux distributions running as virtual machines on bare metal. 
 Automating installations of base "golden" images, spawning fresh vms at light speed, destroying unneeded slaves are some of the features here included.
-These basic functions are well tested and have been used in production environments, mostly in connection with jenkins and the need for fresh build and deploy slaves.
+These scripts are well tested and have been used in production environments, mostly in connection with jenkins and the need for fresh build and deploy slaves, but also to run small websites
+and services. 
 
 I am perfectly aware of the fact that this is not the most elegant possible implementation (bash is bash), but is also very compact and lightweight, and i have tried very hard to keep my
-coding neatly organized and well commented.
+coding neatly organized and well commented, so it is easy to debug. 
 
 The scripts in the actual format are meant to be used on an Ubuntu xenial installation, being it your laptop or a server, and provide an easy implementation of a
 "private cloud" using qemu-kvm, qemu-img, libvirt and libguestfs. Common distributions as Ubuntu 16, Debian 8, Centos 7 are supported and tested, and more flavours will be added later.
 
 The spawning process is quite fast ( less than 60 s ) and the size of the installations remains very compact because the spawns use a read only "golden image" ( a standard installation of the
-corresponding Linux distribution ) as a backing file for the ( qcow2 formatted ) filesystem the spawn OS is using, in a "snapshot" fashion. Once the spawn has booted
+corresponding Linux distribution ) as a backing file for the ( qcow2 formatted ) filesystem the spawn OS is using, in a "snapshot" or "diff" fashion. Once the spawn has booted
 it is possible to decouple the vm from its backing file and consolidate an autonomous image using the "consolidate" script here included.
 
 The network is handled using the default in qemu-kvm, that is, a virbr0 bridge used by the vms.
-This because there can be vary many possible network setups, and my whish was to find a common ground to laptop and server use of these scripts.
+This because there can be vary many possible network setups, and my wish was to find a common ground to laptop and server use of these scripts.
 It works just fine, but there is no implementation (yet) to expose ports and services to the outside world, unless your environment allows it per default. 
 Let me know if you have good ideas about how to implement a more sophisticated approach. 
 
 Feel free to contribute and report bugs, or implement new features, possibly sending pull requests. Bring what you expect to find.
-Send me some compliments or buy me a beer if you find these tools useful. 
+Send me some flowers or buy me a beer if you find these tools useful. 
 
 ## PREREQUISITES
 
-* An OK level of knowledge of kvm and and virsh.
-* Ubuntu 16.04 "xenial" ( but the scripts will work fine also on centos7 / rhel6, although the paths to "virsh" and other commands will need to be adjusted ).
-* qemu-kvm, qemu-utils, libguestfs-tools, virtinst, libvirt-bin, qemu-utils, arp.
+* An OK level of knowledge of kvm and and virsh commands. 
+* An Ubuntu 16.04 "xenial" hypervisor ( but the scripts will work fine also on centos7 / rhel6, although the paths to "virsh" and other commands will need to be adjusted ).
+* qemu-kvm, qemu-utils, libguestfs-tools, virtinst, libvirt-bin, qemu-utils, arp packages installed. 
 * enough diskspace to host the golden images ( defaulted to 12G per distribution ) in the default ubuntu location for qemu-kvm ( /var/lib/libvirt/images ).
 
 ## PRINCIPLES OF OPERATION
@@ -104,6 +107,12 @@ run for example
 
 ./consolidate.sh centos7.backend
  
+### #6 DETECT THE IP OF A VM
 
+Run this script if you need to find out about which IP is assigned to a certain (running) vm. 
+
+run for example 
+
+./detect.sh centos7.backend
 
 
