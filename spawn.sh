@@ -48,6 +48,11 @@ case "$1" in
     echo "Debian 8 (jessie) selected"
   ;;
 
+### ubuntu16
+  -u16 | ubuntu16 | u16)
+    echo "Ubuntu 16.04 (xenial) selected"
+  ;;
+
 ### otherwise, we show usage
   *)
     usage
