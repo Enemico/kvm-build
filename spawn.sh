@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 ##    Copyright [2016] [Cfengine AS]
 ##
 ##    Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +16,6 @@
 ##    limitations under the License.
 ##
 
-#!/bin/bash
 
 #set -x
 VIRSH=/usr/bin/virsh
