@@ -29,7 +29,7 @@ DISK=12G
 
 usage () {
   echo "usage: build [distro]"
-  echo "possible distros: centos6 / centos7 / debian8"
+  echo "possible distros: ubuntu16 / centos7 / debian8"
   exit 1
 }
 
