@@ -29,7 +29,7 @@ DISK=12G
 
 usage () {
   echo "usage: build [distro]"
-  echo "possible distros: ubuntu16 / centos7 / debian8"
+  echo "possible distros: ubuntu16 / centos6 / centos7 / debian8"
   exit 1
 }
 
@@ -74,7 +74,8 @@ case "$1" in
 ### centos6
   -c6 | centos6 | c6)
     LOCATION='http://mirror.centos.org/centos/6/os/x86_64'
-    EXTRA='acpi=on console=tty0 console=ttyS0,115200 ks=file:./files/ks/centos_6_x86_64/anaconda-ks.cfg'
+    PRESEED='./files/ks/centos_6_x86_64/ks.cfg'
+    EXTRA='acpi=on console=tty0 console=ttyS0,115200 ks=file:/ks.cfg'
     OS='rhel6.6'
     create_image
     create_instance
