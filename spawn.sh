@@ -65,6 +65,11 @@ case "$1" in
     echo "Debian 8 (jessie) selected"
   ;;
 
+### debian9
+  -d9 | debian9 | d9)
+    echo "Debian 9 (stretch) selected"
+  ;;
+
 ### ubuntu16
   -u16 | ubuntu16 | u16)
     echo "Ubuntu 16.04 (xenial) selected"
