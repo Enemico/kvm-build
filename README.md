@@ -11,7 +11,7 @@ I am perfectly aware of the fact that this is not the most elegant possible impl
 coding neatly organized and well commented, so it is easy to debug. 
 
 The scripts in the actual format are meant to be used on an Ubuntu xenial installation, being it your laptop or a server, and provide an easy implementation of a
-"private cloud" using qemu-kvm, qemu-img, libvirt and libguestfs. Common distributions as Ubuntu 16, Debian 8, Centos6 and Centos 7 are supported and tested, and more flavours will be added later.
+"private cloud" using qemu-kvm, qemu-img, libvirt and libguestfs. Common distributions as Ubuntu 16, Debian 8, Debian9, Centos6 and Centos 7 are supported and tested, and more flavours will be added later.
 
 The spawning process is quite fast ( less than 60 s ) and the size of the installations remains very compact because the spawns use a read only "golden image" ( a standard installation of the
 corresponding Linux distribution ) as a backing file for the ( qcow2 formatted ) filesystem the spawn OS is using, in a "snapshot" or "diff" fashion. Once the spawn has booted
