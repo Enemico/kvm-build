@@ -55,11 +55,6 @@ case "$1" in
     echo "Debian 6 (squeeze) selected"
   ;;
 
-### debian7
-  -d7 | debian7 | d7)
-    echo "Debian 7 (wheezy) selected"
-  ;;
-
 ### debian8
   -d8 | debian8 | d8)
     echo "Debian 8 (jessie) selected"
