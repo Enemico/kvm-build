@@ -104,7 +104,7 @@ case "$1" in
 ### debian 9
   -d9 | debian9 | d9)
     LOCATION='http://ftp.us.debian.org/debian/dists/stretch/main/installer-amd64/'
-    PRESEED='./files/ks/debian_8_amd64/preseed.cfg'
+    PRESEED='./files/ks/debian_9_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg' 
     OS='debian9'
     create_image
