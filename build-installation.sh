@@ -106,7 +106,8 @@ case "$1" in
     LOCATION='http://ftp.us.debian.org/debian/dists/stretch/main/installer-amd64/'
     PRESEED='./files/ks/debian_9_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg' 
-    OS='debian9'
+## command "osinfo-query os" does not show debian9 yet ( june 2017 )     
+    OS='debian8'
     create_image
     create_instance
   ;;
