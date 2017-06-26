@@ -48,7 +48,8 @@ fi
 $VIRSH list --name | grep -w $DISTRO.orignal > /dev/null 2>&1
 if [ $? -eq "0" ]; then
   echo "We need to shutdown the original instance before we start preparing a golden image"
-  echo "Please do that first."
+  echo "Please do that first. Run 'virsh shutdown' followed by the name of the instance."
+  echo "For example: 'virsh shutdown debian8.original' "
   exit 1
 fi
 
@@ -58,6 +59,7 @@ if [ $? -eq "0" ]; then
   echo "We cannot overwrite the golden image of $DISTRO when snapshots of it are in use."
   echo "Please shut down all $DISTRO based domains first. These are:"
   $VIRSH list --name | grep -w $DISTRO
+  echo "Run 'virsh shutdown $($VIRSH list --name | grep -w $DISTRO)' "
   exit 1
 fi
 
