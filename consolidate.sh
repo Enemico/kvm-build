@@ -125,7 +125,7 @@ rm -f $POOL_DIR/${VM}.qcow2
 
 ## Renaming the rebased image wuth the VM name
 mv $POOL_DIR/${VM}.base.img $POOL_DIR/${VM}.qcow2
-/bin/chown qemu:qemu $POOL_DIR/${VM}.qcow2
+/bin/chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
 chmod +w $POOL_DIR/${VM}.qcow2
 
 echo "Here is the new backing chain for $VM after the consolidation (rebase ) process."
