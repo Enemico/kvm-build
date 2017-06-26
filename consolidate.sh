@@ -58,7 +58,7 @@ pool_list () {
 
 check_running
 if [ $? -eq "0" ]; then
-  echo "The requested instance $VM it's running on this hypervisor."
+  echo "INFO: the requested instance $VM is running on this hypervisor."
   echo "We will have to turn it down."
   $VIRSH shutdown ${VM}
   sleep 10
@@ -138,7 +138,7 @@ chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
 chmod 644 $POOL_DIR/${VM}.qcow2
 
 
-echo "If this looks OK, then you can run: virsh start $VM"
+echo "If this looks OK, then you can run: 'virsh start $VM'"
 
 
 exit 0
