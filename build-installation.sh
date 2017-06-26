@@ -101,6 +101,16 @@ case "$1" in
     create_instance
   ;;
 
+### debian 9
+  -d9 | debian9 | d9)
+    LOCATION='http://ftp.us.debian.org/debian/dists/stretch/main/installer-amd64/'
+    PRESEED='./files/ks/debian_8_amd64/preseed.cfg'
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg' 
+    OS='debian9'
+    create_image
+    create_instance
+  ;;
+
 ### ubuntu 16
   -u16 | ubuntu16 | u16)
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/xenial/main/installer-amd64/'
