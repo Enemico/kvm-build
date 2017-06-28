@@ -31,7 +31,7 @@ fi
 
 usage () {
   echo "usage: $0 [distro] [instance name]"
-  echo "possible distros: centos6 / centos7 / debian8 / debian9 / ubuntu16"
+  echo "possible distros: centos6 / centos7 / debian8 / debian9 / ubuntu14 / ubuntu16"
   exit 1
 }
 
