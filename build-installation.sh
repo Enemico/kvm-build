@@ -112,6 +112,16 @@ case "$1" in
     create_instance
   ;;
 
+### ubuntu 14
+  -u14 | ubuntu14 | u14)
+    LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/trusty/main/installer-amd64/'
+    PRESEED='./files/ks/ubuntu_14_04_amd64/preseed.cfg'
+    OS='ubuntu14.04'
+    EXTRA='acpi=on auto=true console=tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    create_image
+    create_instance
+  ;;
+
 ### ubuntu 16
   -u16 | ubuntu16 | u16)
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/xenial/main/installer-amd64/'
