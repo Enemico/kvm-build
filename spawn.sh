@@ -32,7 +32,7 @@ fi
 
 usage () {
   echo "usage: $0 [distro] [instance name]"
-  echo "possible distros: centos6 / centos7 / debian6 / debian7"
+  echo "possible distros: centos6 / centos7 / debian8 / debian9 / ubuntu16"
   exit 1
 }
 
@@ -184,7 +184,7 @@ check_exitcode
 EOF
 
 #systemd...
-if [ $DISTRO = "centos7" ]; then
+if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ]; then
     /usr/bin/guestfish -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
 fi
 
