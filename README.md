@@ -29,7 +29,7 @@ Feel free to contribute and report bugs, or implement new features, possibly sen
 
 * An OK level of knowledge of kvm and and virsh commands. 
 * An Ubuntu 16.04 "xenial" hypervisor ( but the scripts will work fine also on centos7 / rhel6, although the paths to "virsh" and other commands will need to be adjusted ).
-* qemu-kvm, qemu-utils, libguestfs-tools, virtinst, libvirt-bin, qemu-utils, arp packages installed. 
+* qemu-kvm, qemu-utils, libguestfs-tools, virtinst, libvirt-bin, arp packages installed. 
 * enough diskspace to host the golden images ( defaulted to 12G per distribution ) in the default ubuntu location for qemu-kvm ( /var/lib/libvirt/images ).
 
 ### PRINCIPLES OF OPERATION
