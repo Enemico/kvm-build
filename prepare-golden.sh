@@ -88,8 +88,6 @@ fi
 ### OPERATIONS ###
 ##################
 
-### make sure the original image is read-only
-chmod u-w $CWD/$DISTRO.original.img
 
 ## remove all the configuration that would cause problems when creating multiple clones
 $SYSPREP \
@@ -107,5 +105,6 @@ $GUESTFISH --selinux -i $CWD/${DISTRO}.golden.img <<<'sh "load_policy && restore
 
 ## at the end of the process, we test put also the golden image in read-only now
 chmod u-w $CWD/$DISTRO.golden.img
+chmod u-w $CWD/$DISTRO.original.img
 
 exit 0
