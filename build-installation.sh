@@ -55,9 +55,9 @@ create_image () {
 
 create_instance () {
   $INSTALLER --debug --name $DISTRO.original \
+  --cpu=host \
   --ram=$RAM \
   --graphics none \
-  --cpu disable \ 
   --console pty,target_type=serial \
   --bridge $BRIDGE \
   --disk vol=$VOLUME/$DISTRO.original.img \

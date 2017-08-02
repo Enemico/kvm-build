@@ -22,7 +22,9 @@ DISTRO=$1
 CWD="/var/lib/libvirt/images"
 USER="sub"
 FILENAME="/home/sub/authorized_keys"
-VIRSH=/usr/bin/virsh
+VIRSH=$(which virsh)
+SYSPREP=$(which virt-sysprep)
+GUESTFISH=$(which guestfish)
 
 usage () {
   echo "usage: $0 [distro]"
@@ -90,7 +92,7 @@ fi
 chmod u-w $CWD/$DISTRO.original.img
 
 ## remove all the configuration that would cause problems when creating multiple clones
-/usr/bin/virt-sysprep \
+$SYSPREP \
   --enable ssh-hostkeys,udev-persistent-net,net-hwaddr,logfiles,machine-id \
   --no-selinux-relabel \
   -a $CWD/${DISTRO}.golden.img
@@ -101,7 +103,7 @@ if [ ! -f $CWD/${DISTRO}.golden.img ]; then
 fi
 
 ## fix SELinux
-/usr/bin/guestfish --selinux -i $CWD/${DISTRO}.golden.img <<<'sh "load_policy && restorecon -R -v /"' > /dev/null 2>&1
+$GUESTFISH --selinux -i $CWD/${DISTRO}.golden.img <<<'sh "load_policy && restorecon -R -v /"' > /dev/null 2>&1
 
 ## at the end of the process, we test put also the golden image in read-only now
 chmod u-w $CWD/$DISTRO.golden.img

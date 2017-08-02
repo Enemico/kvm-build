@@ -17,7 +17,9 @@
 
 
 #set -x
-VIRSH=/usr/bin/virsh
+VIRSH=$(which virsh)
+VIRTCLONE=$(which virt-clone)
+GUESTFISH=$(which guestfish)
 DISTRO=$1
 VM=$2
 CWD="/var/lib/libvirt/images"
@@ -138,7 +140,7 @@ qemu-img create -b $CWD/${DISTRO}.golden.img -f qcow2 $CWD/${DISTRO}.${VM}.qcow2
 check_exitcode
 
 ### clone the configuration file for kvm
-/usr/bin/virsh dumpxml $DISTRO.original > /tmp/$DISTRO.original.xml
+$VIRSH dumpxml $DISTRO.original > /tmp/$DISTRO.original.xml
 check_exitcode
 
 ### quickfix https://dev.cfengine.com/issues/7755
@@ -146,7 +148,7 @@ check_exitcode
 sed -i 's/none/unsafe/g' /tmp/$DISTRO.original.xml
 
 # clone the configuration file using the original distro one, changing the image reference to point at the prepared image
-virt-clone --original-xml /tmp/$DISTRO.original.xml --name ${DISTRO}.${VM} --preserve-data --file $CWD/${DISTRO}.${VM}.qcow2
+$VIRTCLONE --original-xml /tmp/$DISTRO.original.xml --name ${DISTRO}.${VM} --preserve-data --file $CWD/${DISTRO}.${VM}.qcow2
 check_exitcode
 
 
@@ -163,7 +165,7 @@ check_exitcode
 
 # As a backup plan, we make sure that the guest will generate some host keys if none are present
 # ( after all, we removed the host keys in the golden image preparation script).
-/usr/bin/guestfish -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
+$GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
 #!/bin/bash
 
   if [ ! -d /root/.ssh ]; then
@@ -189,11 +191,11 @@ EOF
 
 #systemd...
 if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ]; then
-    /usr/bin/guestfish -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
+    $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
 fi
 
 if [ $DISTRO = "debian6" ]; then
-/usr/bin/guestfish -d ${DISTRO}.${VM} -i upload - /etc/apt/sources.list <<EOF
+$GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/apt/sources.list <<EOF
     deb http://archive.debian.org/debian/ squeeze main non-free contrib
     deb-src http://archive.debian.org/debian/ squeeze main non-free contrib
     deb http://archive.debian.org/debian-security/ squeeze/updates main non-free contrib
@@ -202,7 +204,7 @@ EOF
 fi
 
 # start the machine!
-virsh start ${DISTRO}.${VM}
+$VIRSH start ${DISTRO}.${VM}
 check_exitcode
 
 extract_address () {
