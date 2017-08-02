@@ -19,8 +19,8 @@
 
 set -x
 
-INSTALLER=/usr/bin/virt-install
-VIRSH=/usr/bin/virsh
+INSTALLER=$(which virt-install)
+VIRSH=$(which virsh)
 VOLUME=default
 BRIDGE=virbr0
 DISTRO=$1
@@ -57,6 +57,7 @@ create_instance () {
   $INSTALLER --debug --name $DISTRO.original \
   --ram=$RAM \
   --graphics none \
+  --cpu disable \ 
   --console pty,target_type=serial \
   --bridge $BRIDGE \
   --disk vol=$VOLUME/$DISTRO.original.img \
