@@ -20,6 +20,7 @@
 VM=$1
 VIRSH=/usr/bin/virsh
 MAC=`grep -ir "mac address" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}'`
+BRIDGE=`grep -ir "source bridge" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}'`
 
 usage () {
   echo "Usage: $0 [instancename]"
@@ -58,7 +59,7 @@ if [ -f /var/lib/libvirt/dnsmasq/default.leases ]; then
 fi
 ### grep for the mac address in the dhcp leases if any, else use arp to find it
   if [ -z "$IP" ]; then
-    arp -a -i virbr0 | grep -i $MAC > /tmp/arp.txt
+    arp -a -i $BRIDGE | grep -i $MAC > /tmp/arp.txt
     IP=`grep -oP '\(\K[^)]+' /tmp/arp.txt`
   fi
 
