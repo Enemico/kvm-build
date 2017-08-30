@@ -1,6 +1,6 @@
 ## KVM-BUILD
 
-A lightweight private cloud solution
+A lightweight Linux private cloud solution
 
 This set of scripts creates and administrates a set of Linux distributions running as virtual machines on bare metal. 
 Automating installations of base "golden" images, spawning fresh vms at light speed, destroying unneeded slaves are some of the features here included.
@@ -28,7 +28,7 @@ Feel free to contribute and report bugs, or implement new features, possibly sen
 ### PREREQUISITES
 
 * An OK level of knowledge of kvm and and virsh commands. 
-* An Ubuntu 16.04 "xenial" hypervisor ( but the scripts will work fine also on centos7 / rhel6, although the paths to "virsh" and other commands will need to be adjusted ).
+* An Ubuntu 16.04 "xenial" or Centos 7 hypervisor.
 * qemu-kvm, qemu-utils, libguestfs-tools, virtinst, libvirt-bin, arp packages installed. 
 * enough diskspace to host the golden images ( defaulted to 12G per distribution ) in the default ubuntu location for qemu-kvm ( /var/lib/libvirt/images ).
 
