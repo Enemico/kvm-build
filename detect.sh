@@ -52,10 +52,13 @@ check_existing () {
 }
 
 
-### check how many bridges we have
-BRIDGES=$(echo $BRIDGE > /tmp/bridges)
+### count how many bridges we have
+echo $BRIDGE > /tmp/bridges
 BRIDGEAMOUNT=$(cat /tmp/bridges | wc -l)
 echo "We have $BRIDGEAMOUNT bridges"
+
+
+
 
 ### This check worked only on some specific machines, should be adjusted to a more
 ### general use.
