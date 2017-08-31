@@ -67,6 +67,9 @@ grep -ir "source bridge" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}' > 
 BRIDGEAMOUNT=$(cat /tmp/bridges | wc -l)
 echo "We have $BRIDGEAMOUNT ethernet bridges on $VM"
 
+### dump the mac addresses to a file in the same fashion as we just did for bridges
+grep -ir "mac address" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}' > /tmp/macs
+
 ### if we have a single bridge, detect the ip on that bridge
 if [ $BRIDGEAMOUNT -lt "2" ]; then
   ### Use arp to find the ip address 
