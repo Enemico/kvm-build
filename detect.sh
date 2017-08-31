@@ -33,22 +33,27 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
+### check if the command was ran with an argument
 if [ -z $1 ]; then
   echo "Provide an instance name, pretty please?"
   usage
   exit 1
 fi
 
+### check if the VM actually exists ( has a corresponding configuration file )
 if [ ! -f /etc/libvirt/qemu/${VM}.xml ]; then
   echo "$VM doesn't exists, as far as i can see."
   exit 1
 fi
 
+### check if the VM is actually running
 check_existing () {
   $VIRSH list --name | grep -w $VM > /dev/null 2>&1
 }
 
 
+### This check worked only on some specific machines, should be adjusted to a more
+### general use.
 if [ -f /var/lib/libvirt/dnsmasq/default.leases ]; then
   IP=`cat /var/lib/libvirt/dnsmasq/default.leases | grep -i $MAC | awk '{print $3}'`
   check_existing
@@ -57,7 +62,8 @@ if [ -f /var/lib/libvirt/dnsmasq/default.leases ]; then
     exit 1
   fi
 fi
-### grep for the mac address in the dhcp leases if any, else use arp to find it
+
+### Use arp to find the ip address 
   if [ -z "$IP" ]; then
     arp -a -i $BRIDGE | grep -i $MAC > /tmp/arp.txt
     IP=`grep -oP '\(\K[^)]+' /tmp/arp.txt`
