@@ -85,7 +85,8 @@ fi
 
 ### exit if we have a multibridge machine
 if [ $BRIDGEAMOUNT -gt "1" ]; then
-  echo "we have more than 1 bridge, so we have more than one IP address"
+  echo "we have more than 1 bridge, so we have more than one IP address, at the moment i am too stupid to do this."
+  echo "Sorry."
   exit 1
 fi
 
