@@ -15,7 +15,7 @@
 ##    limitations under the License.
 ##
 
-
+set -x
 
 VM=$1
 VIRSH=/usr/bin/virsh
@@ -52,12 +52,13 @@ check_existing () {
 }
 
 ### count how many bridges we have
-echo $BRIDGE > /tmp/bridges
+grep -ir "source bridge" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}' > /tmp/bridges
 BRIDGEAMOUNT=$(cat /tmp/bridges | wc -l)
 echo "We have $BRIDGEAMOUNT bridges"
 
 if [ $BRIDGEAMOUNT -gt "1" ]; then
   echo "we have more than 1 bridge"
+  exit 1
 fi
 
 ### This check worked only on some specific machines, should be adjusted to a more
