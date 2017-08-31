@@ -51,14 +51,14 @@ check_existing () {
   $VIRSH list --name | grep -w $VM > /dev/null 2>&1
 }
 
-
 ### count how many bridges we have
 echo $BRIDGE > /tmp/bridges
 BRIDGEAMOUNT=$(cat /tmp/bridges | wc -l)
 echo "We have $BRIDGEAMOUNT bridges"
 
-
-
+if [ $BRIDGEAMOUNT -gt "1" ]; then
+  echo "we have more than 1 bridge"
+fi
 
 ### This check worked only on some specific machines, should be adjusted to a more
 ### general use.
