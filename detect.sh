@@ -15,7 +15,7 @@
 ##    limitations under the License.
 ##
 
-set -x
+# set -x
 
 VM=$1
 VIRSH=/usr/bin/virsh
@@ -51,16 +51,6 @@ check_existing () {
   $VIRSH list --name | grep -w $VM > /dev/null 2>&1
 }
 
-### count how many bridges we have
-grep -ir "source bridge" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}' > /tmp/bridges
-BRIDGEAMOUNT=$(cat /tmp/bridges | wc -l)
-echo "We have $BRIDGEAMOUNT bridges"
-
-if [ $BRIDGEAMOUNT -gt "1" ]; then
-  echo "we have more than 1 bridge"
-  exit 1
-fi
-
 ### This check worked only on some specific machines, should be adjusted to a more
 ### general use.
 if [ -f /var/lib/libvirt/dnsmasq/default.leases ]; then
@@ -72,16 +62,30 @@ if [ -f /var/lib/libvirt/dnsmasq/default.leases ]; then
   fi
 fi
 
-### Use arp to find the ip address 
+### count how many bridges we have
+grep -ir "source bridge" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}' > /tmp/bridges
+BRIDGEAMOUNT=$(cat /tmp/bridges | wc -l)
+echo "We have $BRIDGEAMOUNT ethernet bridges on $VM"
+
+### if we have a single bridge, detect the ip on that bridge
+if [ $BRIDGEAMOUNT -lt "2" ]; then
+  ### Use arp to find the ip address 
   if [ -z "$IP" ]; then
     arp -a -i $BRIDGE | grep -i $MAC > /tmp/arp.txt
     IP=`grep -oP '\(\K[^)]+' /tmp/arp.txt`
   fi
+  ### Echo the result
+  if [ ! -z "$IP" ]; then
+    echo "$IP is assigned to $VM"
+  else
+    echo "it wasn't possible to detect the ip address for $VM. Uhmmm."
+  exit 1
+  fi
+fi 
 
-if [ ! -z "$IP" ]; then
-  echo "$IP is assigned to $VM"
-else
-  echo "it wasn't possible to detect the ip address for $VM. Uhmmm."
+### exit if we have a multibridge machine
+if [ $BRIDGEAMOUNT -gt "1" ]; then
+  echo "we have more than 1 bridge, so we have more than one IP address"
   exit 1
 fi
 
