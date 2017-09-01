@@ -65,7 +65,7 @@ fi
 ### count how many bridges we have
 grep -ir "source bridge" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}' > /tmp/bridges
 BRIDGEAMOUNT=$(cat /tmp/bridges | wc -l)
-BRIDGEMESSAGE=$(echo "($BRIDGEAMOUNT ethernet bridge(s) on $VM)" )
+BRIDGEMESSAGE=$(echo "(INFO: $BRIDGEAMOUNT ethernet bridge(s) on $VM)" )
 
 ### dump the mac addresses to a file in the same fashion as we just did for bridges
 grep -ir "mac address" /etc/libvirt/qemu/${VM}.xml | awk -F"'" '{print $2}' > /tmp/macs
