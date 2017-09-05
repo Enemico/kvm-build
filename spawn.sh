@@ -173,7 +173,7 @@ $GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
   fi
 
   if [ -f /root/jenkins_authorized_keys ]; then
-    cp /root/jenkins_authorized_keys /root/.ssh/authorized_keys
+    cp /root/custom_authorized_keys /root/.ssh/authorized_keys
     chmod 700 /root/.ssh
     chmod 600 /root/.ssh/authorized_keys
   fi
