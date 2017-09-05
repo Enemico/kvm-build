@@ -168,7 +168,7 @@ check_exitcode
 # ( after all, we removed the host keys in the golden image preparation script).
 
 if [ -f /root/custom_authorized_keys ]; then
-  $VIRTCOPY -d ${DISTRO}.${VM} /root/custom_authorized_keys /root/custom_authorized_keys
+  $VIRTCOPY -d ${DISTRO}.${VM} /root/custom_authorized_keys /root/
 fi
 
 $GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
