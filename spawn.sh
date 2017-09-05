@@ -20,6 +20,7 @@
 VIRSH=$(which virsh)
 VIRTCLONE=$(which virt-clone)
 GUESTFISH=$(which guestfish)
+VIRTCOPY=$(which virt-copy-in)
 DISTRO=$1
 VM=$2
 CWD="/var/lib/libvirt/images"
@@ -165,6 +166,11 @@ check_exitcode
 
 # As a backup plan, we make sure that the guest will generate some host keys if none are present
 # ( after all, we removed the host keys in the golden image preparation script).
+
+if [ -f /root/custom_authorized_keys ]; then
+  $VIRTCOPY -d ${DISTRO}.${VM} /root/custom_authorized_keys /root/custom_authorized_keys
+fi
+
 $GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
 #!/bin/bash
 
