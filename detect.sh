@@ -80,6 +80,9 @@ if [ $BRIDGEAMOUNT -lt "2" ]; then
   ### Echo the result
   if [ ! -z "$IP" ]; then
     echo "$IP is assigned to $VM"
+    if [ $BRIDGEAMOUNT -eq "1" ]; then
+      echo "on bridge $BRIDGE"
+    fi
     echo $BRIDGEMESSAGE
   else
     echo "it wasn't possible to detect the ip address for $VM. Uhmmm."
