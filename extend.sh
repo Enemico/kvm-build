@@ -28,8 +28,16 @@ DISTRO=$($RELEASE -s -i)
 FILESYSTEM=$(which virt-filesystems)
 
 usage () {
-  echo "This command extends the volume of an existing clone."
-  echo "It will first consolidate the disk, the proceed with the extension."
+  echo ""
+  echo "Usage: $0 <vm-name> <desired-size>"
+  echo ""
+  echo "This command extends the disk size of an existing virtual machine to a target size."
+  echo "WARN: this EXPANDS a machine disk size, does NOT work for shrinking."
+  echo "If the machine disk is using a backing fie, then the disk will be consolidated first,"
+  echo "then the script will proceed with the extension."
+  echo ""
+  echo "You should specify the desired size in G or M, for example"
+  echo "$0 ubuntu16.test 30G"
 }
 
 ### Am i Root check
@@ -124,7 +132,7 @@ DISK_SIZE=$($QEMU info --backing-chain $POOL_DIR/${VM}.qcow2 | grep disk | cut -
 
 ## determine if the existing disk contains a LVM structure
 check_lvm () {
-  virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name
+  $FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name
 }
 
 ## expand filesystem accordingly
@@ -133,18 +141,28 @@ check_lvm
     echo "Volume is using LVM"
     ## extract the target for expand
     TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
-    ## resize it
-    echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
-    $RESIZE --expand $TARGET=+"$EXTENT"G $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
+
+    ## create a disk with the desired output size
+    $QEMU create -f qcow2 -o preallocation=metadata $POOL_DIR/${VM}-target.qcow2 "$EXTENT"
+
+    ## resize the original disk on top of the desired end size
+    echo "extending filesystem assigned to lmv ($TARGET) on $VM to $EXTENT of disk"
+    $RESIZE --expand $TARGET $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}-target.qcow2
+
+    ## clean up this shit
     rm -rf $POOL_DIR/${VM}.qcow2
-    mv $POOL_DIR/${VM}.extended.qcow2 $POOL_DIR/${VM}.qcow2
+    mv $POOL_DIR/${VM}-target.qcow2 $POOL_DIR/${VM}.qcow2
     chown $PERMS $POOL_DIR/${VM}.qcow2
     chmod 644 $POOL_DIR/${VM}.qcow2
+
+
   elif [ $? -eq "1" ]; then
     echo "Volume is not using LVM"
     TARGET=$($FILESYSTEM--long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
+
     echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
     $RESIZE --resize $TARGET=+"$EXTENT" --expand $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
+
     rm -rf $POOL_DIR/${VM}.qcow2
     mv $POOL_DIR/${VM}.extended.qcow2 $POOL_DIR/${VM}.qcow2
     chown $PERMS $POOL_DIR/${VM}.qcow2
