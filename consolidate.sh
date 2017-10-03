@@ -123,8 +123,8 @@ if [ $? -ne "0" ]; then
   exit 1
 fi
 
-echo "" 
-echo "Here is the backing chain for ${VM} atm."
+echo ""
+echo "Here is the backing chain for ${VM} atm:"
 echo ""
 ## Check the backing chain
 $QEMU info --backing-chain $POOL_DIR/${VM}.qcow2
@@ -144,7 +144,7 @@ chmod +w $POOL_DIR/${VM}.qcow2
 $VIRSH vol-delete ${VM}.base.img --pool $POOL
 
 echo ""
-echo "Here is the new backing chain for $VM after the consolidation (rebase ) process."
+echo "Here is the new backing chain for $VM after the consolidation (rebase ) process:"
 echo ""
 
 ## Check the backing chain
