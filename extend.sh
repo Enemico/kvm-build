@@ -136,17 +136,9 @@ check_lvm () {
   $FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name
 }
 
-## expand filesystem accordingly
-check_lvm
-  if [ $? -eq "0" ]; then
-
-    ### LVM EXTENDING ###
-    echo "Volume is using LVM"
-
-    ## extract the target for expand
-    TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
-
-    ## create a disk with the desired output size
+## resize the original disk on top of the desired end size
+resize_partition () {
+  ## create a disk with the desired output size
     $QEMU create -f qcow2 -o preallocation=metadata $POOL_DIR/${VM}-target.qcow2 "$EXTENT"
 
     ## resize the original disk on top of the desired end size
@@ -160,19 +152,32 @@ check_lvm
     chmod 644 $POOL_DIR/${VM}.qcow2
 
     ## refresh the pool
-    $VIRSH pool-refresh $POOL
+    $VIRSH pool-refresh $POOL 
+}
+
+
+
+
+## expand filesystem accordingly
+check_lvm
+  if [ $? -eq "0" ]; then
+
+    ### LVM EXTENDING ###
+    echo "Volume is using LVM"
+
+    ## extract the target for expand (onliner tailored for LVM)
+    TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
+
+    resize_partition
 
   elif [ $? -eq "1" ]; then
     echo "Volume is not using LVM"
-    TARGET=$($FILESYSTEM--long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
 
-    echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
-    $RESIZE --resize $TARGET=+"$EXTENT" --expand $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
+    ## extract the target for expand (onliner tailored for non LVM)
+    TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
 
-    rm -rf $POOL_DIR/${VM}.qcow2
-    mv $POOL_DIR/${VM}.extended.qcow2 $POOL_DIR/${VM}.qcow2
-    chown $PERMS $POOL_DIR/${VM}.qcow2
-    chmod 644 $POOL_DIR/${VM}.qcow2
+    resize_partition
+
   else
     echo "Not sure is the domain is using LVM or not"
   fi
