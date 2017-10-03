@@ -128,6 +128,9 @@ mv $POOL_DIR/${VM}.base.img $POOL_DIR/${VM}.qcow2
 /bin/chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
 chmod +w $POOL_DIR/${VM}.qcow2
 
+## Remove the reference to the base image that did not disappear when moving it physically
+$QEMU vol-delete $POOL_DIR/${VM}.base.img --pool $POOL
+
 echo "Here is the new backing chain for $VM after the consolidation (rebase ) process."
 
 ## Check the backing chain
