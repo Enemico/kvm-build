@@ -111,19 +111,6 @@ if [ $? -ne "0" ]; then
   exit 1
 fi
 
-consolidate () {
-    $QEMU rebase -b $POOL_DIR/${VM}.base.img $POOL_DIR/${VM}.qcow2
-    $QEMU commit $POOL_DIR/${VM}.qcow2
-    ## Removing the clone image
-    rm -f $POOL_DIR/${VM}.qcow2
-    ## Renaming the rebased image wuth the VM name
-    mv $POOL_DIR/${VM}.base.img $POOL_DIR/${VM}.qcow2
-    /bin/chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
-    chmod +w $POOL_DIR/${VM}.qcow2
-    chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
-    chmod 644 $POOL_DIR/${VM}.qcow2
-}
-
 ## Check the backing chain
 check_backing () {
   $QEMU info --backing-chain $POOL_DIR/${VM}.qcow2 | grep backing
@@ -132,12 +119,12 @@ check_backing () {
 ## If there is a backing-chain, then we consolidate
 check_backing
 if [ $? -eq "0" ]; then
-  consolidate
-fi 
+  ./consolidate.sh $VM
+fi
 
 ## determine the size of the existing disk
 DISK_SIZE=$($QEMU info --backing-chain $POOL_DIR/${VM}.qcow2 | grep disk | cut -f 3 -d " ")
- 
+
 ## determine if the existing disk contains a LVM structure
 check_lvm () {
   virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name
@@ -147,6 +134,7 @@ check_lvm () {
     echo "Volume is not using LVM"
   else
     echo "Not sure is the domain is using LVM or not"
+  fi
 }
 
 
