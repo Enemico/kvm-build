@@ -15,7 +15,6 @@
 ##    limitations under the License.
 ##
 
-
 VM=$1
 EXTENT=$2
 VIRSH=$(which virsh)
