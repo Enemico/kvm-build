@@ -25,6 +25,7 @@ POOL_DIR=/var/lib/libvirt/images
 RESIZE=$(which virt-resize)
 RELEASE=$(which lsb_release)
 DISTRO=$($RELEASE -s -i)
+FILESYSTEM=$(which virt-filesystems)
 
 usage () {
   echo "This command extends the volume of an existing clone."
@@ -130,7 +131,9 @@ check_lvm () {
 check_lvm
   if [ $? -eq "0" ]; then
     echo "Volume is using LVM"
-    TARGET=$(virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
+    ## extract the target for expand
+    TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
+    ## resize it
     echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
     $RESIZE --expand $TARGET=+"$EXTENT"G $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
     rm -rf $POOL_DIR/${VM}.qcow2
@@ -139,7 +142,7 @@ check_lvm
     chmod 644 $POOL_DIR/${VM}.qcow2
   elif [ $? -eq "1" ]; then
     echo "Volume is not using LVM"
-    TARGET=$(virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
+    TARGET=$($FILESYSTEM--long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
     echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
     $RESIZE --resize $TARGET=+"$EXTENT" --expand $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
     rm -rf $POOL_DIR/${VM}.qcow2
