@@ -125,6 +125,7 @@ check_backing () {
 check_backing
 if [ $? -eq "0" ]; then
   ./consolidate.sh $VM
+  echo "But we are to enlarge the disk size, so we continue"
 fi
 
 ## determine the size of the existing disk
