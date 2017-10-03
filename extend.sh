@@ -151,7 +151,7 @@ resize_partition () {
     chmod 644 $POOL_DIR/${VM}.qcow2
 
     ## refresh the pool
-    $VIRSH pool-refresh $POOL 
+    $VIRSH pool-refresh $POOL
 }
 
 
