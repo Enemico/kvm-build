@@ -122,9 +122,9 @@ check_lvm
     chmod 644 $POOL_DIR/${VM}.qcow2
   elif [ $? -eq "1" ]; then
     echo "Volume is not using LVM"
-    TARGET=$(virt-filesystems --long --csv -a /var/lib/libvirt/images/docketh | grep -v Name | cut -f 1 -d ",")
+    TARGET=$(virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
     echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
-    virt-resize --expand $TARGET=+"$EXTENT"G $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
+    virt-resize --resize $TARGET=+"$EXTENT" --expand $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
     rm -rf $POOL_DIR/${VM}.qcow2
     mv $POOL_DIR/${VM}.extended.qcow2 $POOL_DIR/${VM}.qcow2
   else

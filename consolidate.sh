@@ -60,6 +60,7 @@ check_running
 if [ $? -eq "0" ]; then
   echo "INFO: the requested instance $VM is running on this hypervisor."
   echo "We will have to turn it down."
+  echo ""
   $VIRSH shutdown ${VM}
   sleep 10
   check_running
@@ -78,6 +79,7 @@ if [ $? -eq "0" ]; then
 else
   echo "the requested instance $VM it's not running, good."
   echo "Continuing..."
+  echo ""
 fi
 
 check_running
@@ -89,6 +91,7 @@ fi
 ### From the instance name, extract the DISTRO name.
 DISTRO=$($VIRSH list --inactive --name | grep ${VM} | cut -f1 -d ".")
 echo "${VM} is using the golden image for the $DISTRO distribution."
+echo ""
 
 ### Make a copy of the golden image of the corresponding distribution.
 pool_list | grep $DISTRO.golden.img > /dev/null 2>&1
@@ -108,6 +111,7 @@ if [ $? -ne "0" ]; then
 fi
 
 echo "Here is the backing chain for ${VM} atm."
+echo ""
 ## Check the backing chain
 $QEMU info --backing-chain $POOL_DIR/${VM}.qcow2
 
