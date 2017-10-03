@@ -111,14 +111,8 @@ echo "Here is the backing chain for ${VM} atm."
 ## Check the backing chain
 $QEMU info --backing-chain $POOL_DIR/${VM}.qcow2
 
-
-## Rebasing of the image.
-#$QEMU rebase -b $POOL_DIR/$POOL/${VM}.base.img $POOL_DIR/$POOL/${VM}.qcow2
-#$QEMU commit $POOL_DIR/$POOL/${VM}.qcow2
-
 $QEMU rebase -b $POOL_DIR/${VM}.base.img $POOL_DIR/${VM}.qcow2
 $QEMU commit $POOL_DIR/${VM}.qcow2
-
 
 ## Removing the clone image
 rm -f $POOL_DIR/${VM}.qcow2
@@ -143,7 +137,7 @@ chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
 chmod 644 $POOL_DIR/${VM}.qcow2
 
 
-echo "If this looks OK, then you can run: 'virsh start $VM'"
+echo "Consolidated. Can be started with 'virsh start $VM'"
 
 
 exit 0
