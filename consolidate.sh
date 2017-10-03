@@ -61,10 +61,15 @@ check_backing () {
   $QEMU info --backing-chain $POOL_DIR/${VM}.qcow2 | grep backing
 }
 
+## print the backing chain
+print_backing () {
+  $QEMU info --backing-chain $POOL_DIR/${VM}.qcow2
+}
+
 ## If there is no backing-chain, then we don't consolidate
 check_backing
 if [ $? -eq "1" ]; then
-  echo "$VM has its own disk and does not need consodlidating"
+  echo "$VM has its own, monolithic disk and does not need consolidating"
   echo "Bailing out."
   exit 1
 fi
@@ -126,8 +131,7 @@ fi
 echo ""
 echo "Here is the backing chain for ${VM} atm:"
 echo ""
-## Check the backing chain
-$QEMU info --backing-chain $POOL_DIR/${VM}.qcow2
+print_backing
 
 $QEMU rebase -b $POOL_DIR/${VM}.base.img $POOL_DIR/${VM}.qcow2
 $QEMU commit $POOL_DIR/${VM}.qcow2
@@ -147,8 +151,7 @@ echo ""
 echo "Here is the new backing chain for $VM after the consolidation (rebase ) process:"
 echo ""
 
-## Check the backing chain
-$QEMU info --backing-chain $POOL_DIR/${VM}.qcow2
+print_backing
 
 ## fix permissions
 chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
