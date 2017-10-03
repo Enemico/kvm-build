@@ -157,7 +157,7 @@ print_backing
 chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
 chmod 644 $POOL_DIR/${VM}.qcow2
 
-
+echo ""
 echo "Consolidated. Can be started with 'virsh start $VM'"
 
 
