@@ -56,6 +56,19 @@ pool_list () {
   $VIRSH vol-list --pool $POOL
 }
 
+## Check the backing chain
+check_backing () {
+  $QEMU info --backing-chain $POOL_DIR/${VM}.qcow2 | grep backing
+}
+
+## If there is no backing-chain, then we don't consolidate
+check_backing
+if [ $? -eq "1" ]; then
+  echo "$VM has its own disk and does not need consodlidating"
+  echo "Bailing out."
+  exit 1
+fi
+
 check_running
 if [ $? -eq "0" ]; then
   echo "INFO: the requested instance $VM is running on this hypervisor."
