@@ -17,8 +17,8 @@
 
 
 VM=$1
-VIRSH=/usr/bin/virsh
-QEMU=/usr/bin/qemu-img
+VIRSH=$(which virsh)
+QEMU=$(which qemu-img)
 POOL=default
 POOL_DIR=/var/lib/libvirt/images
 
@@ -123,6 +123,7 @@ if [ $? -ne "0" ]; then
   exit 1
 fi
 
+echo "" 
 echo "Here is the backing chain for ${VM} atm."
 echo ""
 ## Check the backing chain
@@ -140,7 +141,7 @@ mv $POOL_DIR/${VM}.base.img $POOL_DIR/${VM}.qcow2
 chmod +w $POOL_DIR/${VM}.qcow2
 
 ## Remove the reference to the base image that did not disappear when moving it physically
-$QEMU vol-delete ${VM}.base.img --pool $POOL
+$VIRSH vol-delete ${VM}.base.img --pool $POOL
 
 echo ""
 echo "Here is the new backing chain for $VM after the consolidation (rebase ) process."
