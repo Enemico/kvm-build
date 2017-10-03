@@ -21,6 +21,8 @@ VIRSH=$(which virsh)
 QEMU=$(which qemu-img)
 POOL=default
 POOL_DIR=/var/lib/libvirt/images
+RELEASE=$(which lsb_release)
+DISTRO=$($RELEASE -s -i)
 
 usage () {
   echo "This command consolidates the storage of a previously created clone."
@@ -46,6 +48,20 @@ fi
 if [ ! -f /etc/libvirt/qemu/${VM}.xml ]; then
   echo "$VM doesn't exists, as far as i can see."
   exit 1
+fi
+
+if [ -z $RELEASE ]; then
+  echo "You need to install lsb_release for your distribution"
+  exit 1
+fi
+
+if [ $DISTRO = "Ubuntu" ]; then
+  PERMS="libvirt-qemu:kvm"
+elif [ $DISTRO = "CentOS" ]; then
+  PERMS="root:root"
+else
+  echo "For now i can run on Ubuntu and Centos"
+  echo "This is not the case, so i bail out, sorry."
 fi
 
 check_running () {
@@ -141,7 +157,7 @@ rm -f $POOL_DIR/${VM}.qcow2
 
 ## Renaming the rebased image wuth the VM name
 mv $POOL_DIR/${VM}.base.img $POOL_DIR/${VM}.qcow2
-/bin/chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
+/bin/chown $PERMS $POOL_DIR/${VM}.qcow2
 chmod +w $POOL_DIR/${VM}.qcow2
 
 ## Remove the reference to the base image that did not disappear when moving it physically
@@ -154,7 +170,7 @@ echo ""
 print_backing
 
 ## fix permissions
-chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
+chown $PERMS $POOL_DIR/${VM}.qcow2
 chmod 644 $POOL_DIR/${VM}.qcow2
 
 echo ""
