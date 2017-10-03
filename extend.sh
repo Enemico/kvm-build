@@ -90,27 +90,6 @@ if [ $? -eq "0" ]; then
   exit 1
 fi
 
-### From the instance name, extract the DISTRO name.
-DISTRO=$($VIRSH list --inactive --name | grep ${VM} | cut -f1 -d ".")
-echo "${VM} is using the golden image for the $DISTRO distribution."
-
-### Make a copy of the golden image of the corresponding distribution.
-pool_list | grep $DISTRO.golden.img > /dev/null 2>&1
-if [ $? -ne "0" ]; then
-  echo "Uhm, something is wrong, i can't find the corresponding golden image, for some reason."
-  echo "Bailing out."
-  exit 1
-fi
-
-echo "Copying the golden image to a temporary file."
-$VIRSH vol-clone --pool $POOL $DISTRO.golden.img ${VM}.base.img
-pool_list | grep ${VM}.base.img
-if [ $? -ne "0" ]; then
-  echo "Something went wrong with the cloning of the golden image."
-  echo "Bailing out."
-  exit 1
-fi
-
 ## Check the backing chain
 check_backing () {
   $QEMU info --backing-chain $POOL_DIR/${VM}.qcow2 | grep backing
@@ -136,7 +115,6 @@ check_lvm () {
     echo "Not sure is the domain is using LVM or not"
   fi
 }
-
 
 ## fix permissions
 chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
