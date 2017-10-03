@@ -138,7 +138,10 @@ check_lvm () {
 ## expand filesystem accordingly
 check_lvm
   if [ $? -eq "0" ]; then
+
+    ### LVM EXTENDING ###
     echo "Volume is using LVM"
+
     ## extract the target for expand
     TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
 
@@ -155,6 +158,8 @@ check_lvm
     chown $PERMS $POOL_DIR/${VM}.qcow2
     chmod 644 $POOL_DIR/${VM}.qcow2
 
+    ## refresh the pool
+    $VIRSH pool-refresh $POOL
 
   elif [ $? -eq "1" ]; then
     echo "Volume is not using LVM"
