@@ -107,22 +107,29 @@ DISK_SIZE=$($QEMU info --backing-chain $POOL_DIR/${VM}.qcow2 | grep disk | cut -
 ## determine if the existing disk contains a LVM structure
 check_lvm () {
   virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name
+}
+
+## expand filesystem accordingly
+check_lvm
   if [ $? -eq "0" ]; then
     echo "Volume is using LVM"
+    TARGET=$(virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
+    echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
+    virt-resize --expand $TARGET=+"$EXTENT"G $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
+    rm -rf $POOL_DIR/${VM}.qcow2
+    mv $POOL_DIR/${VM}.extended.qcow2 $POOL_DIR/${VM}.qcow2
+    chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
+    chmod 644 $POOL_DIR/${VM}.qcow2
   elif [ $? -eq "1" ]; then
     echo "Volume is not using LVM"
+    TARGET=$(virt-filesystems --long --csv -a /var/lib/libvirt/images/docketh | grep -v Name | cut -f 1 -d ",")
+    echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
+    virt-resize --expand $TARGET=+"$EXTENT"G $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
+    rm -rf $POOL_DIR/${VM}.qcow2
+    mv $POOL_DIR/${VM}.extended.qcow2 $POOL_DIR/${VM}.qcow2
   else
     echo "Not sure is the domain is using LVM or not"
   fi
-}
-
-## fix permissions
-chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
-chmod 644 $POOL_DIR/${VM}.qcow2
-
-
-echo "If this looks OK, then you can run: 'virsh start $VM'"
-
 
 exit 0
 
