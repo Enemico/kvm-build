@@ -21,6 +21,7 @@
 VM=$1
 VIRSH=/usr/bin/virsh
 CWD="/var/lib/libvirt/images"
+POOL="default"
 
 check_original () {
   echo $VM > /tmp/name
@@ -62,23 +63,22 @@ check_running
 if [ $? -eq "0" ]; then
   echo "Destroying $VM"
   $VIRSH destroy $VM
-fi
-
-check_running
-if [ $? -eq "1" ]; then
+elif [ $? -eq "1" ]; then
   if [ -f /etc/libvirt/qemu/$VM.xml ]; then
     echo "Removing kvm configuration file..."
     $VIRSH undefine $1
   else
     echo "No configuration file for $VM"
   fi
+  
   if [ -f $CWD/$VM.img ]; then
     echo "Nuking $VM.img..."
-    $VIRSH vol-delete $VM.img --pool=default
+    $VIRSH pool-refresh --pool=$POOL
+    $VIRSH vol-delete $VM.img --pool=$POOL
   fi
   if [ -f $CWD/$VM.qcow2 ]; then
     echo "Nuking $VM.qcow2..."
-    $VIRSH vol-delete $VM.qcow2 --pool=default
+    $VIRSH vol-delete $VM.qcow2 --pool=$POOL
   fi
 else
   echo "can't determine if $VM is running, got $? exit"
