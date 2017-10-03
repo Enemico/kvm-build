@@ -18,14 +18,17 @@
 
 VM=$1
 EXTENT=$2
-VIRSH=/usr/bin/virsh
-QEMU=/usr/bin/qemu-img
+VIRSH=$(which virsh)
+QEMU=$(which qemu-img)
 POOL=default
 POOL_DIR=/var/lib/libvirt/images
+RESIZE=$(which virt-resize)
+RELEASE=$(which lsb_release)
+DISTRO=$($RELEASE -s -i)
 
 usage () {
   echo "This command extends the volume of an existing clone."
-  echo "It will first consolidate the disk, the proceed with the extension." 
+  echo "It will first consolidate the disk, the proceed with the extension."
 }
 
 ### Am i Root check
@@ -45,6 +48,20 @@ if [ -z $2 ]; then
   echo "Provide an amount in Gb you whish to add to the specified VM"
   usage
   exit 1
+fi
+
+if [ -z $RELEASE ]; then
+  echo "You need to install lsb_release for your distribution"
+  exit 1
+fi
+
+if [ $DISTRO = "Ubuntu" ]; then
+  PERMS="libvirt-qemu:kvm"
+elif [ $DISTRO = "CentOS" ]; then
+  PERMS="root:root"
+else
+  echo "For now i can run on Ubuntu and Centos"
+  echo "This is not the case, so i bail out, sorry."
 fi
 
 if [ ! -f /etc/libvirt/qemu/${VM}.xml ]; then
@@ -115,18 +132,20 @@ check_lvm
     echo "Volume is using LVM"
     TARGET=$(virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
     echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
-    virt-resize --expand $TARGET=+"$EXTENT"G $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
+    $RESIZE --expand $TARGET=+"$EXTENT"G $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
     rm -rf $POOL_DIR/${VM}.qcow2
     mv $POOL_DIR/${VM}.extended.qcow2 $POOL_DIR/${VM}.qcow2
-    chown libvirt-qemu:kvm $POOL_DIR/${VM}.qcow2
+    chown $PERMS $POOL_DIR/${VM}.qcow2
     chmod 644 $POOL_DIR/${VM}.qcow2
   elif [ $? -eq "1" ]; then
     echo "Volume is not using LVM"
     TARGET=$(virt-filesystems --long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
     echo "Resizing $TARGET on $VM adding $EXTENT G of disk"
-    virt-resize --resize $TARGET=+"$EXTENT" --expand $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
+    $RESIZE --resize $TARGET=+"$EXTENT" --expand $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.extended.qcow2
     rm -rf $POOL_DIR/${VM}.qcow2
     mv $POOL_DIR/${VM}.extended.qcow2 $POOL_DIR/${VM}.qcow2
+    chown $PERMS $POOL_DIR/${VM}.qcow2
+    chmod 644 $POOL_DIR/${VM}.qcow2
   else
     echo "Not sure is the domain is using LVM or not"
   fi
