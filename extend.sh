@@ -121,6 +121,8 @@ check_backing () {
 }
 
 ## If there is a backing-chain, then we consolidate
+## And why not, we use one script that works :-)
+
 check_backing
 if [ $? -eq "0" ]; then
   ./consolidate.sh $VM
