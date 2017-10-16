@@ -52,7 +52,7 @@ if [ $? -ne "0" ]; then
 fi
 
 ### adding a confirmation step anyway
-echo "WARNING, this will destroy irreparably your machine $VM" 
+echo "WARNING, this will destroy irreparably your machine $VM"
 read -rep $'Are you sure you want to continue? y/n \n'
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   echo "Aborted"
@@ -66,11 +66,11 @@ if [ $? -eq "0" ]; then
 elif [ $? -eq "1" ]; then
   if [ -f /etc/libvirt/qemu/$VM.xml ]; then
     echo "Removing kvm configuration file..."
-    $VIRSH undefine $1
+    $VIRSH undefine $VM
   else
     echo "No configuration file for $VM"
   fi
-  
+
   if [ -f $CWD/$VM.img ]; then
     echo "Nuking $VM.img..."
     $VIRSH pool-refresh --pool=$POOL
