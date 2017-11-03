@@ -47,7 +47,7 @@ run for example:
 ./build-installation.sh centos7
 
 Once the installation is complete, you will be inside a freshly installed host.
-The vm will be named as "$distro.original" (for example "debian8.original")
+The vm will be named as "$distro.original" (for example "centos7.original")
 Exit, shutdown the vm using "virsh shutdown $distro.original". You are done here.
 
 Note that debian and centos machines will allow root access using the fancy "tapparella" password which is totally insecure to use.
