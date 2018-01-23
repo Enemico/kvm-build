@@ -15,7 +15,7 @@ usage () {
   echo ""
   echo "Usage: $0 <vm-name> <desired-size>"
   echo ""
-  echo "This command extends the disk size of an existing virtual machine to a target size."
+  echo "This command extends the disk size of an existing virtual machine to a TARGET SIZE."
   echo "WARN: this EXPANDS a machine disk size, does NOT work for shrinking."
   echo "If the machine disk is using a backing fie, then the disk will be consolidated first,"
   echo "then the script will proceed with the extension."
@@ -38,7 +38,8 @@ if [ -z $1 ]; then
 fi
 
 if [ -z $2 ]; then
-  echo "Provide an amount in Gb you whish to add to the specified VM"
+  echo "Provide the total amount in Gb you whish to have on the specified VM."
+  echo "Make sure is bigger than the original."
   usage
   exit 1
 fi
