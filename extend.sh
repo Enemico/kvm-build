@@ -132,7 +132,12 @@ resize_partition () {
     $RESIZE --expand $TARGET $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}-target.qcow2
 
     ## clean up this shit
-    rm -rf $POOL_DIR/${VM}.qcow2
+    ## rm -rf $POOL_DIR/${VM}.qcow2
+    mv $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.qcow2.backup
+    echo "I am keeping a copy of the original volume in $POOL_DIR/${VM}.qcow2.backup."
+    echo "This is for safety. Remember to clean up with"
+    echo "$VIRSH vol-delete ${VM}.qcow2.backup --pool default"
+    echo "if applicable." 
     mv $POOL_DIR/${VM}-target.qcow2 $POOL_DIR/${VM}.qcow2
     chown $PERMS $POOL_DIR/${VM}.qcow2
     chmod 644 $POOL_DIR/${VM}.qcow2
