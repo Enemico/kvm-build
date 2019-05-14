@@ -111,8 +111,3 @@ run for example
 
 ./detect.sh centos7.backend
 
-### LICENSE NOTE
-
-Most of the work to produce these scripts ( although these have been later on modified quite heavily ) i have done while working as an infrastructure engineer at Cfengine AS.
-Before ending my professional relationship with the company, i have asked about the possibility to publish these scripts and received a positive response, as long as they
-were published under the Apache license. I added the copyright message for the license to apply correctly.
