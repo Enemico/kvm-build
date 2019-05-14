@@ -108,7 +108,7 @@ case "$1" in
   -d8 | debian8 | d8)
     LOCATION='http://ftp.us.debian.org/debian/dists/jessie/main/installer-amd64/'
     PRESEED='./files/ks/debian_8_amd64/preseed.cfg'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg' 
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     OS='debian8'
     create_image
     create_instance
@@ -118,8 +118,8 @@ case "$1" in
   -d9 | debian9 | d9)
     LOCATION='http://ftp.us.debian.org/debian/dists/stretch/main/installer-amd64/'
     PRESEED='./files/ks/debian_9_amd64/preseed.cfg'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg' 
-## command "osinfo-query os" does not show debian9 yet ( june 2017 )     
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+## command "osinfo-query os" does not show debian9 yet ( june 2017 )
     OS='debian8'
     create_image
     create_instance
@@ -131,6 +131,7 @@ case "$1" in
     PRESEED='./files/ks/ubuntu_14_04_amd64/preseed.cfg'
     OS='ubuntu14.04'
     EXTRA='acpi=on auto=true console=tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    echo "WARNING, Ubuntu 14.04 is EOL, no security updates from April 2019."
     create_image
     create_instance
   ;;
