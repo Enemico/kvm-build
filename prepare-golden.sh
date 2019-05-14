@@ -46,6 +46,13 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
+## check if virsh command is available
+which virsh
+if [ $? -ne "0" ]; then
+  echo "virt-clients not installed, check requirements into README"
+  exit 1
+fi
+
 ### the orignal installation should not be running.
 $VIRSH list --name | grep -w $DISTRO.orignal > /dev/null 2>&1
 if [ $? -eq "0" ]; then
@@ -88,6 +95,13 @@ fi
 ### OPERATIONS ###
 ##################
 
+
+## check if virt-sysprep command is available
+which virt-sysprep
+if [ $? -ne "0" ]; then
+  echo "libguestfs-tools not installed, check requirements into README"
+  exit 1
+fi
 
 ## remove all the configuration that would cause problems when creating multiple clones
 $SYSPREP \

@@ -34,12 +34,23 @@ usage () {
 }
 
 check_volume () {
+  check_virsh
   $VIRSH vol-list --pool $VOLUME
   if [ $? -eq "0" ]; then
     echo "Volume $VOLUME exists"
   fi
 }
+
+check_virsh () {
+  which virsh
+  if [ $? -ne "0" ]; then
+    echo "virt-clients not installed, check requirements into README"
+    exit 1
+  fi
+}
+
 check_existing () {
+  check_virsh
   $VIRSH list --all --name | grep -w $DISTRO.original > /dev/null 2>&1
     if [ $? -eq "0" ]; then
       echo "We already have a $DISTRO.original image in stock."
@@ -72,6 +83,7 @@ case "$1" in
   -h | help | --help)
     usage
   ;;
+
 ### centos6
   -c6 | centos6 | c6)
     LOCATION='http://mirror.centos.org/centos/6/os/x86_64'

@@ -39,6 +39,20 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
+### check if virsh command is available
+which virsh
+if [ $? -ne "0" ]; then
+  echo "virt-clients not installed, check requirements into README"
+  exit 1
+fi
+
+### check if qemu-img command is available
+which qemu-img
+if [ $? -ne "0" ]; then
+  echo "qemu-utils not installed, check requirements into README"
+  exit 1
+fi
+
 if [ -z $1 ]; then
   echo "Provide an instance name, pretty please?"
   usage

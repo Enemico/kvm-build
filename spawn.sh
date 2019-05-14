@@ -32,6 +32,13 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
+## Check for virsh command
+which virsh
+if [ $? -ne "0" ]; then
+  echo "virt-clients not installed, check requirements into README"
+  exit 1
+fi
+
 usage () {
   echo "usage: $0 [distro] [instance name]"
   echo "possible distros: centos6 / centos7 / debian8 / debian9 / ubuntu14 / ubuntu16"
