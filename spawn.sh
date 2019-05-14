@@ -77,6 +77,11 @@ case "$1" in
     echo "Ubuntu 16.04 (xenial) selected"
   ;;
 
+### ubuntu16
+  -u18 | ubuntu18 | u18)
+    echo "Ubuntu 18.04 (bionic) selected"
+  ;;
+
 ### otherwise, we show usage
   *)
     usage
@@ -144,7 +149,6 @@ check_exitcode
 $VIRSH dumpxml $DISTRO.original > /tmp/$DISTRO.original.xml
 check_exitcode
 
-### quickfix https://dev.cfengine.com/issues/7755
 ### change the cache type from none to unsafe
 sed -i 's/none/unsafe/g' /tmp/$DISTRO.original.xml
 

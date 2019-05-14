@@ -29,7 +29,7 @@ DISK=12G
 
 usage () {
   echo "usage: build [distro]"
-  echo "possible distros: ubuntu16 / centos6 / centos7 / debian8 / debian9"
+  echo "possible distros: ubuntu18 / ubuntu16 / centos6 / centos7 / debian8 / debian9"
   exit 1
 }
 
@@ -128,6 +128,16 @@ case "$1" in
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/xenial/main/installer-amd64/'
     PRESEED='./files/ks/ubuntu_16_04_amd64/preseed.cfg'
     OS='ubuntu16.04'
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    create_image
+    create_instance
+  ;;
+
+### ubuntu 18
+  -u18 | ubuntu18 | u18)
+    LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/bionic/main/installer-amd64/'
+    PRESEED='./files/ks/ubuntu_18_04_amd64/preseed.cfg'
+    OS='ubuntu18.04'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     create_image
     create_instance

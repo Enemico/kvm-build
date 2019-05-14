@@ -28,7 +28,7 @@ Feel free to contribute and report bugs, or implement new features, possibly sen
 ### PREREQUISITES
 
 * An OK level of knowledge of kvm and and virsh commands.
-* An Ubuntu 16.04 "xenial" or Centos 7 hypervisor.
+* An Ubuntu 16.04 "xenial", 18.04 "bionic", or Centos 7 hypervisor.
 * qemu-kvm, qemu-utils, libguestfs-tools, virtinst, libvirt-bin, arp, lsb-release packages installed.
 * enough diskspace to host the golden images ( defaulted to 12G per distribution ) in the default ubuntu location for qemu-kvm ( /var/lib/libvirt/images ).
 
