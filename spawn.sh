@@ -198,7 +198,7 @@ $GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
 EOF
 
 #systemd...
-if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ]; then
+if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ] || [ $DISTRO = "debian10" ]; then
     $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
 fi
 
