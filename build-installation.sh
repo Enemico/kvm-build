@@ -102,12 +102,20 @@ case "$1" in
     LOCATION='http://ftp.us.debian.org/debian/dists/stretch/main/installer-amd64/'
     PRESEED='./files/ks/debian_9_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-## command "osinfo-query os" does not show debian9 yet ( june 2017 )
-    OS='debian8'
+    OS='debian9'
     create_image
     create_instance
   ;;
 
+### debian 10
+  -d10 | debian10 | d10)
+    LOCATION='http://ftp.us.debian.org/debian/dists/buster/main/installer-amd64/'
+    PRESEED='./files/ks/debian_10_amd64/preseed.cfg'
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    OS='debian9'
+    create_image
+    create_instance
+  ;;
 ### ubuntu 14
   -u14 | ubuntu14 | u14)
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/trusty/main/installer-amd64/'
