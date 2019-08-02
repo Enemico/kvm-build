@@ -186,14 +186,16 @@ $GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
     chmod 600 /root/.ssh/authorized_keys
   fi
 
-  if [ $(cat /etc/debian_version | cut -f1 -d .) = "10" ]; then
-    ssh-keygen -A
+  if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
+     ssh-keygen -A
   fi
 
-  if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
-     ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa > /dev/null 2>&1
-     ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa > /dev/null 2>&1
-  fi
+## preserving this temporarily in case i broke older distros or RHEL
+#
+#  if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
+#     ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa > /dev/null 2>&1
+#     ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa > /dev/null 2>&1
+#  fi
 
   ## This reload the selinux policy for rpm based distros
   if [ -f /sbin/restorecon ]; then
