@@ -201,6 +201,7 @@ $GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
   if [ -f /sbin/restorecon ]; then
     /sbin/restorecon -R -v /root/.ssh
   fi
+exit 0
 EOF
 
 #systemd...
