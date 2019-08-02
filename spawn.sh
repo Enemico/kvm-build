@@ -25,7 +25,7 @@ fi
 
 usage () {
   echo "usage: $0 [distro] [instance name]"
-  echo "possible distros: centos6 / centos7 / debian8 / debian9 / ubuntu14 / ubuntu16"
+  echo "possible distros: centos6 / centos7 / debian8 / debian9 / debian10 / ubuntu14 / ubuntu16"
   exit 1
 }
 
@@ -184,6 +184,10 @@ $GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
     cp /root/custom_authorized_keys /root/.ssh/authorized_keys
     chmod 700 /root/.ssh
     chmod 600 /root/.ssh/authorized_keys
+  fi
+
+  if [ $(cat /etc/debian_version | cut -f1 -d .) = "10" ]; then
+    ssh-keygen -A
   fi
 
   if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
