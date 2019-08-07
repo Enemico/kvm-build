@@ -66,13 +66,23 @@ if [ $? -eq "0" ]; then
 fi
 
 ### The original installation image should exist.
-### Then we can copy it over. 
+### Then we can copy it over.
 if [ -f $CWD/$DISTRO.original.img ]; then
   cp $CWD/$DISTRO.original.img $CWD/${DISTRO}.golden.img
 else
   echo "I cannot find the base installation image for $DISTRO"
   exit 1
 fi
+
+### Once we have a golden image, we don't need the original image anymore. It takes far too much space to
+### keep a copy. What we still need is the original configuration file for the VM.
+if [ -f $CWD/$DISTRO.golden.img ]; then
+  if [ -f $CWD/$DISTRO.original.img ]; then
+    echo "Deleting the original installation medium to save space."
+    $VIRSH vol-delete $DISTRO.original.img default
+  fi
+fi
+
 
 ##################
 ### OPERATIONS ###
@@ -102,6 +112,6 @@ $GUESTFISH --selinux -i $CWD/${DISTRO}.golden.img <<<'sh "load_policy && restore
 
 ## at the end of the process, we test put also the golden image in read-only now
 chmod u-w $CWD/$DISTRO.golden.img
-chmod u-w $CWD/$DISTRO.original.img
+# chmod u-w $CWD/$DISTRO.original.img
 
 exit 0
