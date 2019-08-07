@@ -16,6 +16,13 @@ usage () {
   exit 1
 }
 
+### Am i Root check
+if [ "$(id -u)" != "0" ]; then
+  echo "This script must be run as root, or preceded by sudo."
+  echo "If sudo does not work, contact your system administrator."
+  exit 1
+fi
+
 check_volume () {
   check_virsh
   $VIRSH vol-list --pool $VOLUME
@@ -109,7 +116,7 @@ case "$1" in
 
 ### debian 10
   -d10 | debian10 | d10)
-    LOCATION='http://ftp.us.debian.org/debian/dists/buster/main/installer-amd64/'
+    LOCATION='http://ftp.no.debian.org/debian/dists/buster/main/installer-amd64/'
     PRESEED='./files/ks/debian_10_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     OS='debian9'
