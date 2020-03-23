@@ -209,6 +209,12 @@ if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ] || [ $DISTRO = "debian10" 
     $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
 fi
 
+if [ $DISTRO = "ubuntu18" ]; then
+    $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
+    $GUESTFISH -d ${DISTRO}.${VM} -i command "systemctl enable rc-local.service"
+    $GUESTFISH -d ${DISTRO}.${VM} -i command "systemctl start rc-local.service"
+fi
+
 if [ $DISTRO = "debian6" ]; then
 $GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/apt/sources.list <<EOF
     deb http://archive.debian.org/debian/ squeeze main non-free contrib

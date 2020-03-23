@@ -10,7 +10,7 @@ POOL="default"
 check_original () {
   echo $VM > /tmp/name
   if [ `cat /tmp/name | grep -E 'original|golden'` ]; then
-    echo "WARNING, you are asking me to nuke an original or golden image" 
+    echo "WARNING, you are asking me to nuke an original or golden image"
     read -rep $'Are you sure you want to continue? y/n \n'
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
       echo "Aborted"
@@ -47,7 +47,10 @@ check_running
 if [ $? -eq "0" ]; then
   echo "Destroying $VM"
   $VIRSH destroy $VM
-elif [ $? -eq "1" ]; then
+fi
+
+check_running
+if [ $? -eq "1" ]; then
   if [ -f /etc/libvirt/qemu/$VM.xml ]; then
     echo "Removing kvm configuration file..."
     $VIRSH undefine $VM
@@ -62,6 +65,7 @@ elif [ $? -eq "1" ]; then
   fi
   if [ -f $CWD/$VM.qcow2 ]; then
     echo "Nuking $VM.qcow2..."
+    $VIRSH pool-refresh --pool=$POOL
     $VIRSH vol-delete $VM.qcow2 --pool=$POOL
   fi
 else
