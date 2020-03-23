@@ -25,7 +25,7 @@ fi
 
 usage () {
   echo "usage: $0 [distro] [instance name]"
-  echo "possible distros: centos6 / centos7 / debian8 / debian9 / debian10 / ubuntu14 / ubuntu16"
+  echo "possible distros: centos6 / centos7 / debian8 / debian9 / debian10 / ubuntu14 / ubuntu16 / ubuntu18"
   exit 1
 }
 
@@ -225,7 +225,7 @@ check_exitcode
 extract_address () {
   # extract the mac address from the configuration file
   MAC=`grep -ir "mac address" /etc/libvirt/qemu/${DISTRO}.${VM}.xml | awk -F"'" '{print $2}'`
-  ### grep for the mac address in the dhcp leases if any, else use arp to find it 
+  ### grep for the mac address in the dhcp leases if any, else use arp to find it
   if [ -f /var/lib/libvirt/dnsmasq/default.leases ]; then
     IP=`cat /var/lib/libvirt/dnsmasq/default.leases | grep -i $MAC | awk '{print $3}'`
   else
