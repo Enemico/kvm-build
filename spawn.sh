@@ -141,7 +141,8 @@ fi
 
 if [ ! -f $CWD/${DISTRO}.golden.img ]; then
   echo "Sorry, we don't have a golden image ready for ${DISTRO}."
-  echo "Use build-installation and prepare-golden scripts."
+  echo "Use ./build-installation.sh ${DISTRO} first, then"
+  echo "run ./prepare-golden.sh ${DISTRO}. Then retry with this command."
   exit 1
 fi
 
