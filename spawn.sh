@@ -137,6 +137,14 @@ if [ $VM == "golden" ]; then
   exit 1
 fi
 
+## check if we have the golden image
+
+if [ ! -f $CWD/${DISTRO}.golden.img ]; then
+  echo "Sorry, we don't have a golden image ready for ${DISTRO}."
+  echo "Use build-installation and prepare-golden scripts."
+  exit 1
+fi
+
 ## create a clone, referencing only to the copy
 qemu-img create -b $CWD/${DISTRO}.golden.img -f qcow2 $CWD/${DISTRO}.${VM}.qcow2
 check_exitcode
