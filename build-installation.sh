@@ -94,6 +94,16 @@ case "$1" in
     create_instance
   ;;
 
+### centos8
+  -c8 | centos8 | c8)
+    LOCATION='http://mirror.centos.org/centos/8/BaseOS/x86_64/os/'
+    PRESEED='./files/ks/centos_8_x86_64/ks.cfg'
+    EXTRA='acpi=on console=tty0 console=ttyS0,115200 ks=file:/ks.cfg'
+    OS='rhel8.0'
+    create_image
+    create_instance
+  ;;
+
 ### debian 8
   -d8 | debian8 | d8)
     LOCATION='http://ftp.us.debian.org/debian/dists/jessie/main/installer-amd64/'
@@ -149,6 +159,16 @@ case "$1" in
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/bionic/main/installer-amd64/'
     PRESEED='./files/ks/ubuntu_18_04_amd64/preseed.cfg'
     OS='ubuntu18.04'
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    create_image
+    create_instance
+  ;;
+
+### ubuntu 20
+  -u20 | ubuntu20 | u20)
+    LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/'
+    PRESEED='./files/ks/ubuntu_20_04_amd64/preseed.cfg'
+    OS='ubuntu20.04'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     create_image
     create_instance

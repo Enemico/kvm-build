@@ -78,6 +78,11 @@ case "$1" in
     echo "Ubuntu 18.04 (bionic) selected"
   ;;
 
+### ubuntu16
+  -u20 | ubuntu20 | u20)
+    echo "Ubuntu 20.04 (focal) selected"
+  ;;
+
 ### otherwise, we show usage
   *)
     usage
@@ -147,7 +152,7 @@ if [ ! -f $CWD/${DISTRO}.golden.img ]; then
 fi
 
 ## create a clone, referencing only to the copy
-qemu-img create -b $CWD/${DISTRO}.golden.img -f qcow2 $CWD/${DISTRO}.${VM}.qcow2
+qemu-img create -b $CWD/${DISTRO}.golden.img -F qcow2 -f qcow2 $CWD/${DISTRO}.${VM}.qcow2
 check_exitcode
 
 ### clone the configuration file for kvm
@@ -218,7 +223,7 @@ if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ] || [ $DISTRO = "debian10" 
     $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
 fi
 
-if [ $DISTRO = "ubuntu18" ]; then
+if [ $DISTRO = "ubuntu18" ] || [ $DISTRO = "ubuntu20" ]; then
     $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
     $GUESTFISH -d ${DISTRO}.${VM} -i command "systemctl enable rc-local.service"
     $GUESTFISH -d ${DISTRO}.${VM} -i command "systemctl start rc-local.service"
