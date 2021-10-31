@@ -129,7 +129,16 @@ case "$1" in
     LOCATION='http://ftp.no.debian.org/debian/dists/buster/main/installer-amd64/'
     PRESEED='./files/ks/debian_10_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-    OS='debian9'
+    OS='debian10'
+    create_image
+    create_instance
+  ;;
+### debian 11
+  -d11 | debian11 | d11)
+    LOCATION='http://ftp.no.debian.org/debian/dists/bullseye/main/installer-amd64/'
+    PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    OS='debian10'
     create_image
     create_instance
   ;;
