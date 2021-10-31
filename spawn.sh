@@ -224,7 +224,7 @@ exit 0
 EOF
 
 #systemd...
-if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ] || [ $DISTRO = "debian10" ]; then
+if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ] || [ $DISTRO = "debian10" ] || [ $DISTRO = "debian11" ];  then
     $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
 fi
 
