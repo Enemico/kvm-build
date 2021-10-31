@@ -1,6 +1,6 @@
 ## KVM-BUILD
 
-A lightweight Linux private cloud solution
+A lightweight Linux private "cloud" VM solution
 
 This set of scripts creates and administrates a set of Linux distributions running as virtual machines on bare metal. 
 Automating installations of base "golden" images, spawning fresh vms at light speed, destroying unneeded slaves are some of the features here included.
