@@ -58,9 +58,14 @@ case "$1" in
     echo "Debian 9 (stretch) selected"
   ;;
 
-### debian9
+### debian10
   -d10 | debian10 | d10)
     echo "Debian 10 (buster) selected"
+  ;;
+
+### debian11
+  -d11 | debian11 | d11)
+    echo "Debian 11 (bullseye) selected"
   ;;
 
 ### ubuntu14
