@@ -50,7 +50,7 @@ Once the installation is complete, you will be inside a freshly installed host.
 The vm will be named as "$distro.original" (for example "centos7.original")
 Exit, shutdown the vm using "virsh shutdown $distro.original". You are done here.
 
-Note that debian and centos machines will allow root access using the fancy "tapparella" password which is totally insecure to use.
+Note that debian and centos machines will allow root access using the fancy "porcodio" password which is totally insecure to use.
 Ubuntu defaults to a username "sub" with the same password, having sudo privileges.
 Further implementations should improve this aspect in the future, in the meantime these (quite silly) values can be edited in the files/ks/$distro/preseed or ks file.
 
