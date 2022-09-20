@@ -25,7 +25,7 @@ fi
 
 usage () {
   echo "usage: $0 [distro] [instance name]"
-  echo "possible distros: centos6 / centos7 / debian8 / debian9 / debian10 / ubuntu14 / ubuntu16 / ubuntu18"
+  echo "possible distros: debian10 / debian 11 / ubuntu18 / ubuntu20"
   exit 1
 }
 
@@ -34,10 +34,6 @@ case "$1" in
 ### help
   -h | help | --help)
     usage
-  ;;
-### centos8
-  -c8 | centos8 | c8)
-    echo "CentOS 8 selected"
   ;;
 
 ### debian11
