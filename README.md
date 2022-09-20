@@ -28,7 +28,7 @@ Feel free to contribute and report bugs, or implement new features, possibly sen
 ### PREREQUISITES
 
 * An OK level of knowledge of kvm and and virsh commands.
-* An Ubuntu 20.04 "focal" (if you want to install ubuntu 20), or Centos 7 hypervisor.
+* An Ubuntu 20.04 "focal" (if you want to install ubuntu 20).
 * "qemu-kvm qemu-utils libguestfs-tools virtinst libvirt-clients libvirt-daemon virt-manager net-tools lsb-release" packages installed (in case of an ubuntu host).
 * enough diskspace to host the golden images ( defaulted to 12G per distribution ) in the default ubuntu location for qemu-kvm ( /var/lib/libvirt/images ).
 
@@ -44,10 +44,10 @@ I defaulted ( hardcoded ) the amount of CPUs to one for obvious reasons, but it 
 
 run for example:
 
-./build-installation.sh centos7
+./build-installation.sh debian11
 
 Once the installation is complete, you will be inside a freshly installed host.
-The vm will be named as "$distro.original" (for example "centos7.original")
+The vm will be named as "$distro.original" (for example "debian11.original")
 Exit, shutdown the vm using "virsh shutdown $distro.original". You are done here.
 
 Note that debian and centos machines will allow root access using the fancy "tapparella" password which is totally insecure to use.
@@ -62,7 +62,7 @@ So we need to turn the "original" image into a "golden image", that is an image 
 
 run for example:
 
-./prepare-golden.sh centos7
+./prepare-golden.sh debian11
 
 The script will automatically find the corresponding base installation image, copy it to a new file, clean up the installation from the previously named "identifiers", and adjust the permissions
 of the resulting images. Note that if at, AT ANY TIME, the golden images will be tampered with, ALL the vms that are using them as backing files will be affected in unpredictable and possibly
@@ -81,7 +81,7 @@ In the future should be possible to give RAM and CPU count as an argument, but n
 
 run for example
 
-./spawn.sh centos7 frontend
+./spawn.sh debian11 frontend
 
 #### #4 Nuke'em
 
@@ -91,7 +91,7 @@ It asks for confirmation.
 
 run for example
 
-./nuke.sh centos7.frontend
+./nuke.sh debian11.frontend
 
 #### #5 Consolidate a vm image
 
@@ -101,7 +101,7 @@ Obviously the size of the result vm image will be a sum of the two.
 
 run for example
 
-./consolidate.sh centos7.backend
+./consolidate.sh debian11.backend
 
 #### #6 Detect the IP of a vm
 
@@ -109,5 +109,5 @@ Run this script if you need to find out about which IP is assigned to a certain 
 
 run for example
 
-./detect.sh centos7.backend
+./detect.sh debian11.backend
 
