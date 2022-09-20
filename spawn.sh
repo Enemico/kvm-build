@@ -35,32 +35,9 @@ case "$1" in
   -h | help | --help)
     usage
   ;;
-### centos6
-  -c6 | centos6 | c6)
-    echo "CentOS 6 selected"
-  ;;
-### centos7
-  -c7 | centos7 | c7)
-    echo "CentOS 7 selected"
-  ;;
-### debian6
-  -d6 | debian6 | d6)
-    echo "Debian 6 (squeeze) selected"
-  ;;
-
-### debian8
-  -d8 | debian8 | d8)
-    echo "Debian 8 (jessie) selected"
-  ;;
-
-### debian9
-  -d9 | debian9 | d9)
-    echo "Debian 9 (stretch) selected"
-  ;;
-
-### debian10
-  -d10 | debian10 | d10)
-    echo "Debian 10 (buster) selected"
+### centos8
+  -c8 | centos8 | c8)
+    echo "CentOS 8 selected"
   ;;
 
 ### debian11
@@ -68,22 +45,12 @@ case "$1" in
     echo "Debian 11 (bullseye) selected"
   ;;
 
-### ubuntu14
-  -u14 | ubuntu14 | u14)
-    echo "Ubuntu 14.04 (trusty) selected"
-  ;;
-
-### ubuntu16
-  -u16 | ubuntu16 | u16)
-    echo "Ubuntu 16.04 (xenial) selected"
-  ;;
-
-### ubuntu16
+### ubuntu18
   -u18 | ubuntu18 | u18)
     echo "Ubuntu 18.04 (bionic) selected"
   ;;
 
-### ubuntu16
+### ubuntu20
   -u20 | ubuntu20 | u20)
     echo "Ubuntu 20.04 (focal) selected"
   ;;
