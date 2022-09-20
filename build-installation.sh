@@ -12,7 +12,7 @@ DISK=12G
 
 usage () {
   echo "usage: build [distro]"
-  echo "possible distros: ubuntu18 / ubuntu16 / centos6 / centos7 / debian8 / debian9 / debian10"
+  echo "possible distros: ubuntu18 / ubuntu20 / centos8 / debian10 / debian 11"
   exit 1
 }
 
@@ -72,16 +72,6 @@ case "$1" in
 ### help
   -h | help | --help)
     usage
-  ;;
-
-### centos8
-  -c8 | centos8 | c8)
-    LOCATION='http://mirror.centos.org/centos/8/BaseOS/x86_64/os/'
-    PRESEED='./files/ks/centos_8_x86_64/ks.cfg'
-    EXTRA='acpi=on console=tty0 console=ttyS0,115200 ks=file:/ks.cfg'
-    OS='rhel8.0'
-    create_image
-    create_instance
   ;;
 
 ### debian 11
