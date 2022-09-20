@@ -74,52 +74,12 @@ case "$1" in
     usage
   ;;
 
-### centos6
-  -c6 | centos6 | c6)
-    LOCATION='http://mirror.centos.org/centos/6/os/x86_64'
-    PRESEED='./files/ks/centos_6_x86_64/ks.cfg'
-    EXTRA='acpi=on console=tty0 console=ttyS0,115200 ks=file:/ks.cfg'
-    OS='rhel6.6'
-    create_image
-    create_instance
-  ;;
-
-### centos7
-  -c7 | centos7 | c7)
-    LOCATION='http://mirror.centos.org/centos/7/os/x86_64'
-    PRESEED='./files/ks/centos_7_x86_64/ks.cfg'
-    EXTRA='acpi=on console=tty0 console=ttyS0,115200 ks=file:/ks.cfg'
-    OS='rhel7.0'
-    create_image
-    create_instance
-  ;;
-
 ### centos8
   -c8 | centos8 | c8)
     LOCATION='http://mirror.centos.org/centos/8/BaseOS/x86_64/os/'
     PRESEED='./files/ks/centos_8_x86_64/ks.cfg'
     EXTRA='acpi=on console=tty0 console=ttyS0,115200 ks=file:/ks.cfg'
     OS='rhel8.0'
-    create_image
-    create_instance
-  ;;
-
-### debian 8
-  -d8 | debian8 | d8)
-    LOCATION='http://ftp.us.debian.org/debian/dists/jessie/main/installer-amd64/'
-    PRESEED='./files/ks/debian_8_amd64/preseed.cfg'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-    OS='debian8'
-    create_image
-    create_instance
-  ;;
-
-### debian 9
-  -d9 | debian9 | d9)
-    LOCATION='http://ftp.us.debian.org/debian/dists/stretch/main/installer-amd64/'
-    PRESEED='./files/ks/debian_9_amd64/preseed.cfg'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-    OS='debian9'
     create_image
     create_instance
   ;;
@@ -139,26 +99,6 @@ case "$1" in
     PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     OS='debian10'
-    create_image
-    create_instance
-  ;;
-### ubuntu 14
-  -u14 | ubuntu14 | u14)
-    LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/trusty/main/installer-amd64/'
-    PRESEED='./files/ks/ubuntu_14_04_amd64/preseed.cfg'
-    OS='ubuntu14.04'
-    EXTRA='acpi=on auto=true console=tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-    echo "WARNING, Ubuntu 14.04 is EOL, no security updates from April 2019."
-    create_image
-    create_instance
-  ;;
-
-### ubuntu 16
-  -u16 | ubuntu16 | u16)
-    LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/xenial/main/installer-amd64/'
-    PRESEED='./files/ks/ubuntu_16_04_amd64/preseed.cfg'
-    OS='ubuntu16.04'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     create_image
     create_instance
   ;;
