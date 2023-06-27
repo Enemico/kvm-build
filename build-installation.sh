@@ -31,6 +31,15 @@ check_volume () {
   fi
 }
 
+check_pool () {
+  check_virsh
+  $VIRSH pool-info --pool $VOLUME
+  if [ $? -ne "0" ]; then
+    echo "default pool does not exists, please create it and start it"
+    exit 1
+  fi
+}
+
 check_virsh () {
   which virsh
   if [ $? -ne "0" ]; then
@@ -77,6 +86,16 @@ case "$1" in
 ### debian 11
   -d11 | debian11 | d11)
     LOCATION='http://ftp.no.debian.org/debian/dists/bullseye/main/installer-amd64/'
+    PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    OS='debian10'
+    create_image
+    create_instance
+  ;;
+
+### debian 12
+  -d12 | debian12 | d12)
+    LOCATION='http://ftp.no.debian.org/debian/dists/bookworm/main/installer-amd64/'
     PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     OS='debian10'
