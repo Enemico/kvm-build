@@ -96,7 +96,7 @@ case "$1" in
 ### debian 12
   -d12 | debian12 | d12)
     LOCATION='http://ftp.no.debian.org/debian/dists/bookworm/main/installer-amd64/'
-    PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
+    PRESEED='./files/ks/debian_12_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     OS='debian10'
     create_image
