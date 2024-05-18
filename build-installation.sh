@@ -7,8 +7,8 @@ VIRSH=$(which virsh)
 VOLUME=default
 BRIDGE=virbr0
 DISTRO=$1
-RAM=4096
-DISK=12G
+RAM=8192
+DISK=20G
 
 usage () {
   echo "usage: build [distro]"
@@ -66,14 +66,15 @@ create_image () {
 create_instance () {
   $INSTALLER --debug --name $DISTRO.original \
   --cpu=host \
+  --vcpus 4 \
   --ram=$RAM \
-  --graphics none \
+  --graphics $GRAPHICS \
   --console pty,target_type=serial \
   --bridge $BRIDGE \
   --disk vol=$VOLUME/$DISTRO.original.img \
   --os-variant $OS \
   --location "$LOCATION" \
-  --initrd-inject $PRESEED \
+  --initrd-inject="$PRESEED" \
   --extra-args="$EXTRA"
 }
 
@@ -88,7 +89,8 @@ case "$1" in
     LOCATION='http://ftp.no.debian.org/debian/dists/bullseye/main/installer-amd64/'
     PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-    OS='debian10'
+    OS='debian11'
+    GRAPHICS='none'
     create_image
     create_instance
   ;;
@@ -96,9 +98,21 @@ case "$1" in
 ### debian 12
   -d12 | debian12 | d12)
     LOCATION='http://ftp.no.debian.org/debian/dists/bookworm/main/installer-amd64/'
-    PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
+    PRESEED='./files/ks/debian_12_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-    OS='debian10'
+    OS='debian12'
+    GRAPHICS='none'
+    create_image
+    create_instance
+  ;;
+
+### debian 12 with graphics
+  -debian-graphic | debiang | dg)
+    LOCATION='http://ftp.no.debian.org/debian/dists/bookworm/main/installer-amd64/'
+    PRESEED='./files/ks/debian_12_amd64_g/preseed.cfg'
+    EXTRA='acpi=on auto=true ks=file:/preseed.cfg'
+    OS='debian12'
+    GRAPHICS='vnc'
     create_image
     create_instance
   ;;
@@ -109,6 +123,7 @@ case "$1" in
     PRESEED='./files/ks/ubuntu_18_04_amd64/preseed.cfg'
     OS='ubuntu18.04'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    GRAPHICS='none'
     create_image
     create_instance
   ;;
@@ -118,6 +133,7 @@ case "$1" in
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/'
     PRESEED='./files/ks/ubuntu_20_04_amd64/preseed.cfg'
     OS='ubuntu20.04'
+    GRAPHICS='none'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
     create_image
     create_instance
