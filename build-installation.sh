@@ -85,7 +85,7 @@ case "$1" in
   ;;
 
 ### debian 11
-  -d11 | debian11 | d11)
+  debian11)
     LOCATION='http://ftp.no.debian.org/debian/dists/bullseye/main/installer-amd64/'
     PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
@@ -96,7 +96,7 @@ case "$1" in
   ;;
 
 ### debian 12
-  -d12 | debian12 | d12)
+  debian12)
     LOCATION='http://ftp.no.debian.org/debian/dists/bookworm/main/installer-amd64/'
     PRESEED='./files/ks/debian_12_amd64/preseed.cfg'
     EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
@@ -107,7 +107,7 @@ case "$1" in
   ;;
 
 ### debian 12 with graphics
-  -debian-graphic | debiang | dg)
+  debian-graphics)
     LOCATION='http://ftp.no.debian.org/debian/dists/bookworm/main/installer-amd64/'
     PRESEED='./files/ks/debian_12_amd64_g/preseed.cfg'
     EXTRA='acpi=on auto=true ks=file:/preseed.cfg'
@@ -118,7 +118,7 @@ case "$1" in
   ;;
 
 ### ubuntu 18
-  -u18 | ubuntu18 | u18)
+  ubuntu18)
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/bionic/main/installer-amd64/'
     PRESEED='./files/ks/ubuntu_18_04_amd64/preseed.cfg'
     OS='ubuntu18.04'
@@ -129,7 +129,7 @@ case "$1" in
   ;;
 
 ### ubuntu 20
-  -u20 | ubuntu20 | u20)
+  ubuntu20)
     LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/'
     PRESEED='./files/ks/ubuntu_20_04_amd64/preseed.cfg'
     OS='ubuntu20.04'

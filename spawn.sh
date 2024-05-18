@@ -25,7 +25,7 @@ fi
 
 usage () {
   echo "usage: $0 [distro] [instance name]"
-  echo "possible distros: debian10 / debian 11 / ubuntu18 / ubuntu20"
+  echo "possible distros: debian10 / debian 12 / ubuntu18 / ubuntu20"
   exit 1
 }
 
@@ -36,18 +36,23 @@ case "$1" in
     usage
   ;;
 
-### debian11
-  -d11 | debian11 | d11)
-    echo "Debian 11 (bullseye) selected"
+### debian12
+  debian12)
+    echo "Debian 12 (bookworm) selected"
+  ;;
+
+### debian12 + graphics
+  debian-graphics)
+    echo "Debian 12 (bookworm) with graphics selected"
   ;;
 
 ### ubuntu18
-  -u18 | ubuntu18 | u18)
+  ubuntu18)
     echo "Ubuntu 18.04 (bionic) selected"
   ;;
 
 ### ubuntu20
-  -u20 | ubuntu20 | u20)
+  ubuntu20)
     echo "Ubuntu 20.04 (focal) selected"
   ;;
 
@@ -128,7 +133,7 @@ $VIRSH dumpxml $DISTRO.original > /tmp/$DISTRO.original.xml
 check_exitcode
 
 ### change the cache type from none to unsafe
-sed -i 's/none/unsafe/g' /tmp/$DISTRO.original.xml
+# sed -i 's/none/unsafe/g' /tmp/$DISTRO.original.xml
 
 # clone the configuration file using the original distro one, changing the image reference to point at the prepared image
 $VIRTCLONE --original-xml /tmp/$DISTRO.original.xml --name ${DISTRO}.${VM} --preserve-data --file $CWD/${DISTRO}.${VM}.qcow2
@@ -187,7 +192,7 @@ exit 0
 EOF
 
 #systemd...
-if [ $DISTRO = "centos7" ] || [ $DISTRO = "debian9" ] || [ $DISTRO = "debian10" ] || [ $DISTRO = "debian11" ];  then
+if [ $DISTRO = "debian12g" ] || [ $DISTRO = "debian12" ] ;  then
     $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
 fi
 
@@ -195,15 +200,6 @@ if [ $DISTRO = "ubuntu18" ] || [ $DISTRO = "ubuntu20" ]; then
     $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
     $GUESTFISH -d ${DISTRO}.${VM} -i command "systemctl enable rc-local.service"
     $GUESTFISH -d ${DISTRO}.${VM} -i command "systemctl start rc-local.service"
-fi
-
-if [ $DISTRO = "debian6" ]; then
-$GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/apt/sources.list <<EOF
-    deb http://archive.debian.org/debian/ squeeze main non-free contrib
-    deb-src http://archive.debian.org/debian/ squeeze main non-free contrib
-    deb http://archive.debian.org/debian-security/ squeeze/updates main non-free contrib
-    deb-src http://archive.debian.org/debian-security/ squeeze/updates main non-free contrib
-EOF
 fi
 
 # start the machine!
