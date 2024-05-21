@@ -139,69 +139,6 @@ check_exitcode
 $VIRTCLONE --original-xml /tmp/$DISTRO.original.xml --name ${DISTRO}.${VM} --preserve-data --file $CWD/${DISTRO}.${VM}.qcow2
 check_exitcode
 
-
-### inject standard SSH host keys ( the same for all possible machines we clone ).
-## first step is to make sure the permissions for our local files are correct
-# chmod 600 keys/ssh_host*
-# chmod 644 keys/*.pub
-#
-# ## copy them into the clone
-# /usr/bin/virt-copy-in -d ${DISTRO}.${VM} keys/ssh_host* /etc/ssh/
-
-# /usr/bin/virt-copy-in -d ${DISTRO}.${VM} files/rc.local /etc/rc.local
-# /usr/bin/virt-copy-in -d ${DISTRO}.${VM} $PWD/files/jenkins_authorized_keys /root
-
-# As a backup plan, we make sure that the guest will generate some host keys if none are present
-# ( after all, we removed the host keys in the golden image preparation script).
-
-if [ -f /root/custom_authorized_keys ]; then
-  cp /root/custom_authorized_keys /tmp/authorized_keys
-  $VIRTCOPY -d ${DISTRO}.${VM} /tmp/authorized_keys /root/
-  rm /tmp/authorized_keys
-fi
-
-$GUESTFISH -d ${DISTRO}.${VM} -i upload - /etc/rc.local <<EOF
-#!/bin/bash
-
-  if [ ! -d /root/.ssh ]; then
-    mkdir /root/.ssh
-  fi
-
-  if [ -f /root/custom_authorized_keys ]; then
-    cp /root/custom_authorized_keys /root/.ssh/authorized_keys
-    chmod 700 /root/.ssh
-    chmod 600 /root/.ssh/authorized_keys
-  fi
-
-  if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
-     ssh-keygen -A
-  fi
-
-## preserving this temporarily in case i broke older distros or RHEL
-#
-#  if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
-#     ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa > /dev/null 2>&1
-#     ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa > /dev/null 2>&1
-#  fi
-
-  ## This reload the selinux policy for rpm based distros
-  if [ -f /sbin/restorecon ]; then
-    /sbin/restorecon -R -v /root/.ssh
-  fi
-exit 0
-EOF
-
-#systemd...
-if [ $DISTRO = "debian12g" ] || [ $DISTRO = "debian12" ] ;  then
-    $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
-fi
-
-if [ $DISTRO = "ubuntu18" ] || [ $DISTRO = "ubuntu20" ]; then
-    $GUESTFISH -d ${DISTRO}.${VM} -i command "chmod a+x /etc/rc.local"
-    $GUESTFISH -d ${DISTRO}.${VM} -i command "systemctl enable rc-local.service"
-    $GUESTFISH -d ${DISTRO}.${VM} -i command "systemctl start rc-local.service"
-fi
-
 # start the machine!
 $VIRSH start ${DISTRO}.${VM}
 check_exitcode
