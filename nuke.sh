@@ -19,6 +19,11 @@ check_original () {
   fi
 }
 
+if [ -z "$1" ]; then
+  echo "You have to specify a VM name. Bailing out."
+  exit 1
+fi
+
 check_existing () {
   $VIRSH list --all --name | grep -w $VM > /dev/null 2>&1
 }
