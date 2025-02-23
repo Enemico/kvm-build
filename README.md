@@ -1,18 +1,13 @@
 ## KVM-BUILD
 
-A lightweight Linux private "cloud" VM solution
+A lightweight Linux VM solution
 
-This set of scripts creates and administrates a set of Linux distributions running as virtual machines on bare metal. 
+This set of scripts creates and administrates a set of Linux Debian machines running as virtual machines on bare metal. 
 Automating installations of base "golden" images, spawning fresh vms at light speed, destroying unneeded slaves are some of the features here included.
-These scripts are well tested and have been used in production environments, mostly in connection with jenkins and the need for fresh build and deploy slaves, but also to run small websites
 and services.
 
 I am perfectly aware of the fact that this is not the most elegant possible implementation (bash is bash), but is also very compact and lightweight, and i have tried very hard to keep my
 coding neatly organized and well commented, so it is easy to debug.
-
-The scripts in the actual format are meant to be used either on an Ubuntu xenial or a Centos 7 installation, being it your laptop or a server, and provide an easy implementation of a
-"private cloud" using qemu-kvm, qemu-img, libvirt and libguestfs. Common distributions as Ubuntu 18 and 20, Debian 8, Debian9, Centos6 and Centos7 are supported and tested,
-and more flavours will be added later.
 
 The spawning process is quite fast ( less than 60 s ) and the size of the installations remains very compact because the spawns use a read only "golden image" ( a standard installation of the
 corresponding Linux distribution ) as a backing file for the ( qcow2 formatted ) filesystem the spawn OS is using, in a "snapshot" or "diff" fashion. Once the spawn has booted
@@ -28,7 +23,6 @@ Feel free to contribute and report bugs, or implement new features, possibly sen
 ### PREREQUISITES
 
 * An OK level of knowledge of kvm and and virsh commands.
-* An Ubuntu 20.04 "focal" (if you want to install ubuntu 20).
 * "qemu-kvm qemu-utils libguestfs-tools virtinst libvirt-clients libvirt-daemon virt-manager net-tools lsb-release" packages installed (in case of an ubuntu host).
 * enough diskspace to host the golden images ( defaulted to 12G per distribution ) in the default ubuntu location for qemu-kvm ( /var/lib/libvirt/images ).
 
@@ -44,10 +38,10 @@ I defaulted ( hardcoded ) the amount of CPUs to one for obvious reasons, but it 
 
 run for example:
 
-./build-installation.sh debian11
+./build-installation.sh debian12
 
 Once the installation is complete, you will be inside a freshly installed host.
-The vm will be named as "$distro.original" (for example "debian11.original")
+The vm will be named as "$distro.original" (for example "debian12.original")
 Exit, shutdown the vm using "virsh shutdown $distro.original". You are done here.
 
 Note that debian and centos machines will allow root access using the fancy "porcodio" password which is totally insecure to use.
@@ -62,7 +56,7 @@ So we need to turn the "original" image into a "golden image", that is an image 
 
 run for example:
 
-./prepare-golden.sh debian11
+./prepare-golden.sh debian12
 
 The script will automatically find the corresponding base installation image, copy it to a new file, clean up the installation from the previously named "identifiers", and adjust the permissions
 of the resulting images. Note that if at, AT ANY TIME, the golden images will be tampered with, ALL the vms that are using them as backing files will be affected in unpredictable and possibly
@@ -91,7 +85,7 @@ It asks for confirmation.
 
 run for example
 
-./nuke.sh debian11.frontend
+./nuke.sh debian12.frontend
 
 #### #5 Consolidate a vm image
 
@@ -101,7 +95,7 @@ Obviously the size of the result vm image will be a sum of the two.
 
 run for example
 
-./consolidate.sh debian11.backend
+./consolidate.sh debian12.backend
 
 #### #6 Detect the IP of a vm
 
@@ -109,5 +103,5 @@ Run this script if you need to find out about which IP is assigned to a certain 
 
 run for example
 
-./detect.sh debian11.backend
+./detect.sh debian12.backend
 

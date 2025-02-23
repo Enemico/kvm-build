@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 INSTALLER=$(which virt-install)
 VIRSH=$(which virsh)
@@ -8,7 +8,7 @@ VOLUME=default
 BRIDGE=virbr0
 DISTRO=$1
 RAM=8192
-DISK=20G
+DISK=30G
 
 usage () {
   echo "usage: build [distro]"
