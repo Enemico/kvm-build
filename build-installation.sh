@@ -84,17 +84,6 @@ case "$1" in
     usage
   ;;
 
-### debian 11
-  debian11)
-    LOCATION='http://ftp.no.debian.org/debian/dists/bullseye/main/installer-amd64/'
-    PRESEED='./files/ks/debian_11_amd64/preseed.cfg'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-    OS='debian11'
-    GRAPHICS='none'
-    create_image
-    create_instance
-  ;;
-
 ### debian 12
   debian12)
     LOCATION='http://ftp.no.debian.org/debian/dists/bookworm/main/installer-amd64/'
