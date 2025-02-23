@@ -100,7 +100,7 @@ fi
 $SYSPREP \
   --enable ssh-hostkeys,udev-persistent-net,net-hwaddr,logfiles,machine-id,customize \
   --no-selinux-relabel \
-  --copy-in $PWD/files/scripts:/usr/local/bin \
+  --copy-in $PWD/files/scripts/:/usr/local/bin/ \
   -a $CWD/${DISTRO}.golden.img
 
 if [ ! -f $CWD/${DISTRO}.golden.img ]; then
