@@ -12,7 +12,7 @@ DISK=20G
 
 usage () {
   echo "usage: build [distro]"
-  echo "possible distros: ubuntu18 / ubuntu20 / debian12 / debian-graphics"
+  echo "possible distros: ubuntu20 / debian12 / debian-graphics"
   exit 1
 }
 
@@ -102,17 +102,6 @@ case "$1" in
     EXTRA='acpi=on auto=true ks=file:/preseed.cfg'
     OS='debian12'
     GRAPHICS='vnc'
-    create_image
-    create_instance
-  ;;
-
-### ubuntu 18
-  ubuntu18)
-    LOCATION='http://no.archive.ubuntu.com/ubuntu/dists/bionic/main/installer-amd64/'
-    PRESEED='./files/ks/ubuntu_18_04_amd64/preseed.cfg'
-    OS='ubuntu18.04'
-    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
-    GRAPHICS='none'
     create_image
     create_instance
   ;;
