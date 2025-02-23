@@ -102,6 +102,7 @@ $SYSPREP \
   --no-selinux-relabel \
   --copy-in $PWD/files/scripts/wipe.sh:/usr/local/bin \
   --copy-in $PWD/files/scripts/desktop.sh:/usr/local/bin \
+  --copy-in $PWD/files/scripts/resolved.conf:/etc/systemd \
   -a $CWD/${DISTRO}.golden.img
 
 if [ ! -f $CWD/${DISTRO}.golden.img ]; then

@@ -7,6 +7,5 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-apt install yaru-theme-gnome-shell yaru-theme-icon yaru-theme-gtk gnome-session-flashback gdm3 systemd-resolved gnome-terminal openssh-server firefox-esr
-
-
+apt install vim console-setup systemd-resolved gnome-tweaks
+dpkg-reconfigure openssh-server
