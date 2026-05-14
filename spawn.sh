@@ -25,7 +25,7 @@ fi
 
 usage () {
   echo "usage: $0 [distro] [instance name]"
-  echo "possible distros: debian10 / debian 12 / ubuntu18 / ubuntu20"
+  echo "possible distros: debian12 / debian-graphics / debian13 / debian13-grphics / ubuntu20"
   exit 1
 }
 
@@ -46,9 +46,14 @@ case "$1" in
     echo "Debian 12 (bookworm) with graphics selected"
   ;;
 
-### ubuntu18
-  ubuntu18)
-    echo "Ubuntu 18.04 (bionic) selected"
+### debian13
+  debian13)
+    echo "Debian 13 (trixie) selected"
+  ;;
+
+### debian13 + graphics
+  debian13-graphics)
+    echo "Debian 13 (trixie) with graphics selected"
   ;;
 
 ### ubuntu20

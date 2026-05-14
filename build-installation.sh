@@ -12,7 +12,7 @@ DISK=30G
 
 usage () {
   echo "usage: build [distro]"
-  echo "possible distros: ubuntu20 / debian12 / debian-graphics"
+  echo "possible distros: ubuntu20 / debian12 / debian-graphics / debian13 / debian13-graphics"
   exit 1
 }
 
@@ -101,6 +101,28 @@ case "$1" in
     PRESEED='./files/ks/debian_12_amd64_g/preseed.cfg'
     EXTRA='acpi=on auto=true ks=file:/preseed.cfg'
     OS='debian12'
+    GRAPHICS='vnc'
+    create_image
+    create_instance
+  ;;
+
+### debian 13
+  debian13)
+    LOCATION='http://ftp.no.debian.org/debian/dists/trixie/main/installer-amd64/'
+    PRESEED='./files/ks/debian_13_amd64/preseed.cfg'
+    EXTRA='acpi=on auto=true console tty0 console=ttyS0,115200n8 serial ks=file:/preseed.cfg'
+    OS='debian13'
+    GRAPHICS='none'
+    create_image
+    create_instance
+  ;;
+
+### debian 13 with graphics
+  debian13-graphics)
+    LOCATION='http://ftp.no.debian.org/debian/dists/trixie/main/installer-amd64/'
+    PRESEED='./files/ks/debian_13_amd64_g/preseed.cfg'
+    EXTRA='acpi=on auto=true ks=file:/preseed.cfg'
+    OS='debian13'
     GRAPHICS='vnc'
     create_image
     create_instance

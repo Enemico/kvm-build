@@ -1,89 +1,114 @@
 #!/usr/bin/env bash
-# Author: samba
-# Description: wipe the disk LUKS key and the boot partition 
+# Description: wipe the disk LUKS key OR erase LUKS keyslots, and optionally wipe the boot partition
 
-
-# disk autodiscovery is safer but if you want you can specify the disks
-DISK=$(blkid  -ndrp| grep crypto_LUKS| awk -F: '{print $1}')
+# Auto-discover LUKS device and boot partition
+LUKS=$(blkid -ndrp | grep crypto_LUKS | awk -F: '{print $1}')
 BOOT=$(mount | grep boot | awk '{print $1}')
-RUN=0 # do not run the wipe by default
-DRY=1 # run in dry-run by default
+MODE=""   # must be set to "key" or "partition" before executing
+DRY=1     # dry-run by default
+WIPE_BOOT=0
 
 usage(){
-    if [ $# -eq 0 ];then
-        echo "Usage $0:
-        -d|--disk           Specify the disk to wipe (default: $DISK)
-        -b|--boot           Specify the boot partition to wipe (default: $BOOT)
-        -n|--dry-run        Dry run, do not perform any action (default: on)
-        -r|--run            Run the script, wipe the disks, NO WAY BACK (default: off)
-        -h|--help           Print this help message
-        "
-    fi
+    echo ""
+    echo "Usage: $0 -k|-p [-b] [-r] [-n] [-h]"
+    echo ""
+    echo "  Two mutually exclusive LUKS wipe modes (pick one):"
+    echo "    -k|--key            Zero the LUKS header on $LUKS"
+    echo "                        Fast, destroys the header. Data is unrecoverable."
+    echo "    -p|--partition      Erase all LUKS keyslots on $LUKS via cryptsetup"
+    echo "                        Surgical: keyslots gone, rest of disk untouched."
+    echo ""
+    echo "  Optional:"
+    echo "    -b|--boot           Also wipe the boot partition (default: $BOOT)"
+    echo "    -r|--run            Live mode — actually perform the wipe (default: dry-run)"
+    echo "    -n|--dry-run        Dry-run mode, no changes made (default: on)"
+    echo "    -h|--help           Print this help message"
+    echo ""
     exit 0
 }
+
 error(){
-    echo "ERROR: $* "
+    echo "ERROR: $*"
     exit 1
 }
+
 info(){
     echo "INFO: $*"
 }
 
-
 check_disk(){
-    [ $1 == "" ] && error "no disk assigned to check_disk"
-    DISK="$1"
-    if [ $(fdisk -l | grep -c $DISK) -ne 0 ];then
+    [ -z "$1" ] && error "no disk assigned to check_disk"
+    local DISK="$1"
+    if [ $(fdisk -l | grep -c $DISK) -ne 0 ]; then
         info "Found $DISK, ready to wipe"
     else
         error "$DISK not found."
     fi
 }
-wipe_disk(){
-    # wipe the LUKS key
-    [ $1 == "" ] && error "nothing assigned to check_disk"
-    DISK="$1"
-    if [ $DRY -eq 1 ];then
-        echo "[DRYRUN]: wiping $DISK, please wait..."
+
+wipe_key(){
+    # Zero the LUKS header — fast, destroys the superblock entirely
+    local DISK="$1"
+    if [ $DRY -eq 1 ]; then
+        echo "[DRYRUN]: zeroing LUKS header on $DISK"
         echo "[DRYRUN]: head -c 1052672 /dev/zero > $DISK; sync"
     else
-        info "wiping $DISK, please wait..."
+        info "Zeroing LUKS header on $DISK, please wait..."
         head -c 1052672 /dev/zero > $DISK; sync
     fi
 }
+
+wipe_partition(){
+    # Erase all LUKS keyslots via cryptsetup — surgical, does not touch the rest of the disk
+    local DISK="$1"
+    which cryptsetup > /dev/null 2>&1 || error "cryptsetup not found, please install it"
+    if [ $DRY -eq 1 ]; then
+        echo "[DRYRUN]: erasing all LUKS keyslots on $DISK via cryptsetup"
+        echo "[DRYRUN]: cryptsetup erase $DISK"
+    else
+        info "Erasing all LUKS keyslots on $DISK via cryptsetup, please wait..."
+        cryptsetup erase "$DISK"
+    fi
+}
+
 wipe_boot(){
-    # wipe the boot partition
-    [ $1 == "" ] && error "nothing assigned to wipe_boot"
-    DISK="$1"
-    if [ $DRY -eq 1 ];then
-        echo "[DRYRUN]: wiping $DISK, please wait..."
+    # Zero the boot partition entirely
+    local DISK="$1"
+    if [ $DRY -eq 1 ]; then
+        echo "[DRYRUN]: zeroing boot partition $DISK"
         echo "[DRYRUN]: dd if=/dev/zero of=$DISK bs=1M"
     else
-        info "wiping $DISK, please wait..."
+        info "Zeroing boot partition $DISK, please wait..."
         dd if=/dev/zero of=$DISK bs=1M
     fi
 }
 
 [ $# -eq 0 ] && usage
 
-while [ $# -ne 0 ];do
+while [ $# -ne 0 ]; do
     case $1 in
-        -d|--disk)
-            shift
-            DISK="$1"
-            BOOT=""
+        -k|--key)
+            [ "$MODE" = "partition" ] && error "-k and -p are mutually exclusive. Pick one."
+            MODE="key"
+            [[ -n "$2" && "$2" != -* ]] && { shift; LUKS="$1"; }
+            ;;
+        -p|--partition)
+            [ "$MODE" = "key" ] && error "-k and -p are mutually exclusive. Pick one."
+            MODE="partition"
+            [[ -n "$2" && "$2" != -* ]] && { shift; LUKS="$1"; }
             ;;
         -b|--boot)
-            shift
-            BOOT="$1"
-            DISK=""
+            WIPE_BOOT=1
+            [[ -n "$2" && "$2" != -* ]] && { shift; BOOT="$1"; }
             ;;
         -r|--run)
-            RUN=1
             DRY=0
             ;;
         -n|--dry-run)
             DRY=1
+            ;;
+        -h|--help)
+            usage
             ;;
         *)
             usage
@@ -92,16 +117,49 @@ while [ $# -ne 0 ];do
     shift
 done
 
+[ -z "$MODE" ] && error "You must specify a mode: -k to zero the LUKS header, or -p to erase keyslots via cryptsetup."
+[ -z "$LUKS" ] && error "No LUKS device detected and none specified. Use -k or -p /dev/sdX to set one manually."
+[ $WIPE_BOOT -eq 1 ] && [ -z "$BOOT" ] && error "Boot wipe requested but no boot partition detected. Specify one with -b /dev/sdX."
 
-if [ "$DISK" != "" ];then
-    info "wipe disk: $DISK"
-    check_disk $DISK
-    wipe_disk $DISK
+### Summary
+echo ""
+echo "========================================"
+echo " wipe.sh — planned actions"
+echo "========================================"
+echo ""
+if [ "$MODE" = "key" ]; then
+    echo "  Operation : zero LUKS header (head /dev/zero)"
+    echo "  Target    : $LUKS"
+elif [ "$MODE" = "partition" ]; then
+    echo "  Operation : erase LUKS keyslots (cryptsetup erase)"
+    echo "  Target    : $LUKS"
 fi
-if [ "$BOOT" != "" ];then
-    info "wipe boot partition: $BOOT"
-    check_disk $BOOT
-    wipe_boot $BOOT
+[ $WIPE_BOOT -eq 1 ] && echo "  Boot wipe : $BOOT"
+echo ""
+if [ $DRY -eq 1 ]; then
+    echo "  Mode: DRY RUN — no changes will be made. Pass -r to run for real."
+else
+    echo "  Mode: LIVE — THIS WILL DESTROY DATA. THERE IS NO RECOVERY."
+fi
+echo ""
+echo "========================================"
+read -rep $'Are you sure you want to continue? y/n \n'
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Aborted."
+    exit 1
+fi
+
+### Execute
+check_disk "$LUKS"
+if [ "$MODE" = "key" ]; then
+    wipe_key "$LUKS"
+elif [ "$MODE" = "partition" ]; then
+    wipe_partition "$LUKS"
+fi
+
+if [ $WIPE_BOOT -eq 1 ]; then
+    check_disk "$BOOT"
+    wipe_boot "$BOOT"
 fi
 
 exit 0

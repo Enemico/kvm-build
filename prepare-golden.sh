@@ -100,6 +100,7 @@ fi
 $SYSPREP \
   --enable ssh-hostkeys,udev-persistent-net,net-hwaddr,logfiles,machine-id,customize \
   --no-selinux-relabel \
+  --firstboot-command 'ssh-keygen -A' \
   --copy-in $PWD/files/scripts/wipe.sh:/usr/local/bin \
   --copy-in $PWD/files/scripts/desktop.sh:/usr/local/bin \
   --copy-in $PWD/files/scripts/resolved.conf:/etc/systemd \
