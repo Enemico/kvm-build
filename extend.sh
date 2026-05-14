@@ -17,7 +17,7 @@ usage () {
   echo ""
   echo "This command extends the disk size of an existing virtual machine to a TARGET SIZE."
   echo "WARN: this EXPANDS a machine disk size, does NOT work for shrinking."
-  echo "If the machine disk is using a backing fie, then the disk will be consolidated first,"
+  echo "If the machine disk is using a backing file, then the disk will be consolidated first,"
   echo "then the script will proceed with the extension."
   echo ""
   echo "You should specify the desired size in G or M, for example"
@@ -52,8 +52,8 @@ if [ -z $1 ]; then
 fi
 
 if [ -z $2 ]; then
-  echo "Provide the total amount in Gb you whish to have on the specified VM."
-  echo "Make sure is bigger than the original."
+  echo "Provide the total amount in Gb you wish to have on the specified VM."
+  echo "Make sure it is bigger than the original."
   usage
   exit 1
 fi
@@ -63,6 +63,8 @@ if [ -z $RELEASE ]; then
   exit 1
 fi
 
+# FIX: added exit 1 to the else branch so the script doesn't continue
+# with $PERMS unset when running on an unsupported distro
 if [ $DISTRO = "Ubuntu" ]; then
   PERMS="libvirt-qemu:kvm"
 elif [ $DISTRO = "CentOS" ]; then
@@ -70,6 +72,7 @@ elif [ $DISTRO = "CentOS" ]; then
 else
   echo "For now i can run on Ubuntu and Centos"
   echo "This is not the case, so i bail out, sorry."
+  exit 1
 fi
 
 if [ ! -f /etc/libvirt/qemu/${VM}.xml ]; then
@@ -121,8 +124,6 @@ check_backing () {
 }
 
 ## If there is a backing-chain, then we consolidate
-## And why not, we use one script that works :-)
-
 check_backing
 if [ $? -eq "0" ]; then
   ./consolidate.sh $VM
@@ -140,50 +141,54 @@ check_lvm () {
 ## resize the original disk on top of the desired end size
 resize_partition () {
   ## create a disk with the desired output size
-    $QEMU create -f qcow2 -o preallocation=metadata $POOL_DIR/${VM}-target.qcow2 "$EXTENT"
+  $QEMU create -f qcow2 -o preallocation=metadata $POOL_DIR/${VM}-target.qcow2 "$EXTENT"
 
-    ## resize the original disk on top of the desired end size
-    echo "extending filesystem assigned to lmv ($TARGET) on $VM to $EXTENT of disk"
-    $RESIZE --expand $TARGET $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}-target.qcow2
+  ## resize the original disk on top of the desired end size
+  echo "extending filesystem assigned to lvm ($TARGET) on $VM to $EXTENT of disk"
+  $RESIZE --expand $TARGET $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}-target.qcow2
 
-    ## clean up this shit
-    ## rm -rf $POOL_DIR/${VM}.qcow2
-    mv $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.qcow2.backup
-    echo "I am keeping a copy of the original volume in $POOL_DIR/${VM}.qcow2.backup."
-    echo "This is for safety. Remember to clean up with"
-    echo "$VIRSH vol-delete ${VM}.qcow2.backup --pool default"
-    echo "if applicable." 
-    mv $POOL_DIR/${VM}-target.qcow2 $POOL_DIR/${VM}.qcow2
-    chown $PERMS $POOL_DIR/${VM}.qcow2
-    chmod 644 $POOL_DIR/${VM}.qcow2
+  ## keep a backup of the original volume
+  mv $POOL_DIR/${VM}.qcow2 $POOL_DIR/${VM}.qcow2.backup
+  echo "I am keeping a copy of the original volume in $POOL_DIR/${VM}.qcow2.backup."
+  echo "This is for safety. Remember to clean up with"
+  echo "$VIRSH vol-delete ${VM}.qcow2.backup --pool default"
+  echo "if applicable."
+  mv $POOL_DIR/${VM}-target.qcow2 $POOL_DIR/${VM}.qcow2
+  chown $PERMS $POOL_DIR/${VM}.qcow2
+  chmod 644 $POOL_DIR/${VM}.qcow2
 
-    ## refresh the pool
-    $VIRSH pool-refresh $POOL
+  ## refresh the pool
+  $VIRSH pool-refresh $POOL
 }
 
-## expand filesystem accordingly
+# FIX: capture $? immediately after check_lvm into a variable.
+# Previously, by the time the elif ran, $? had been overwritten by
+# the exit code of the if-condition itself, so the non-LVM path
+# could never be reached.
 check_lvm
-  if [ $? -eq "0" ]; then
+LVM_RESULT=$?
 
-    ### LVM EXTENDING ###
-    echo "Volume is using LVM"
+if [ $LVM_RESULT -eq "0" ]; then
 
-    ## extract the target for expand (onliner tailored for LVM)
-    TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
+  ### LVM EXTENDING ###
+  echo "Volume is using LVM"
 
-    resize_partition
+  ## extract the target for expand (one-liner tailored for LVM)
+  TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 --volume-groups | grep -v Name | cut -f 4 -d ",")
 
-  elif [ $? -eq "1" ]; then
-    echo "Volume is not using LVM"
+  resize_partition
 
-    ## extract the target for expand (onliner tailored for non LVM)
-    TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
+elif [ $LVM_RESULT -eq "1" ]; then
+  echo "Volume is not using LVM"
 
-    resize_partition
+  ## extract the target for expand (one-liner tailored for non-LVM)
+  TARGET=$($FILESYSTEM --long --csv -a $POOL_DIR/${VM}.qcow2 | grep -v Name | cut -f 1 -d ",")
 
-  else
-    echo "Not sure is the domain is using LVM or not"
-  fi
+  resize_partition
+
+else
+  echo "Not sure if the domain is using LVM or not"
+  exit 1
+fi
 
 exit 0
-
