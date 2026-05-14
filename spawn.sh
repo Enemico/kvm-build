@@ -103,15 +103,15 @@ if [ $? -eq "0" ]; then
   exit 1
 fi
 
-## check if we are not risiking to overwrite some important image
-
-if [ $VM == "original" ]; then
-  echo "Sorry, "original" is a bad name here."
+## check if we are not risking to overwrite some important image
+# FIX: replaced curly/smart quotes with straight quotes in both comparisons
+if [ "$VM" = "original" ]; then
+  echo "Sorry, 'original' is a bad name here."
   exit 1
 fi
 
-if [ $VM == "golden" ]; then
-  echo "Sorry, "golden" is a bad name here."
+if [ "$VM" = "golden" ]; then
+  echo "Sorry, 'golden' is a bad name here."
   exit 1
 fi
 
@@ -156,13 +156,16 @@ extract_address () {
 }
 
 extract_address
-if [ -z $IP ]; then
-  echo "Waiting for the instance to boot"
+if [ -z "$IP" ]; then
+  echo "Waiting for the instance to boot..."
   sleep 40
+  extract_address  # FIX: re-run after sleep so IP can be populated
+fi
+
+# FIX: guard the final echo — IP may still be empty if the VM is slow to get a lease
+if [ -z "$IP" ]; then
+  echo "WARNING: Could not determine IP address for ${DISTRO}.${VM}. The instance may still be booting."
+  echo "Try running ./detect.sh ${DISTRO}.${VM} once it has fully started."
 else
   echo "$IP has been assigned to ${DISTRO}.${VM} by DHCP"
 fi
-
-extract_address
-echo "$IP has been assigned to ${DISTRO}.${VM} by DHCP"
-
