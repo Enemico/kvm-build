@@ -37,7 +37,7 @@ if [ $? -ne "0" ]; then
 fi
 
 ### the orignal installation should not be running.
-$VIRSH list --name | grep -w $DISTRO.orignal > /dev/null 2>&1
+$VIRSH list --name | grep -w $DISTRO.original > /dev/null 2>&1
 if [ $? -eq "0" ]; then
   echo "We need to shutdown the original instance before we start preparing a golden image"
   echo "Please do that first. Run 'virsh shutdown' followed by the name of the instance."
