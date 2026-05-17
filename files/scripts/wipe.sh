@@ -38,23 +38,23 @@ info(){
 
 check_disk(){
     [ -z "$1" ] && error "no disk assigned to check_disk"
-    local DISK="$1"
-    if [ $(fdisk -l | grep -c $DISK) -ne 0 ]; then
-        info "Found $DISK, ready to wipe"
+    local LUKS="$1"
+    if [ $(fdisk -l | grep -c $LUKS) -ne 0 ]; then
+        info "Found $LUKS, ready to wipe"
     else
-        error "$DISK not found."
+        error "$LUKS not found."
     fi
 }
 
 wipe_key(){
     # Zero the LUKS header — fast, destroys the superblock entirely
-    local DISK="$1"
+    local LUKS="$1"
     if [ $DRY -eq 1 ]; then
-        echo "[DRYRUN]: zeroing LUKS header on $DISK"
-        echo "[DRYRUN]: head -c 1052672 /dev/zero > $DISK; sync"
+        echo "[DRYRUN]: zeroing LUKS header on $LUKS"
+        echo "[DRYRUN]: head -c 1052672 /dev/zero > $LUKS; sync"
     else
-        info "Zeroing LUKS header on $DISK, please wait..."
-        head -c 1052672 /dev/zero > $DISK; sync
+        info "Zeroing LUKS header on $LUKS, please wait..."
+        head -c 1052672 /dev/zero > $LUKS; sync
     fi
 }
 
