@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Author: samba
 # Description: wipe the disk LUKS key OR erase LUKS keyslots, and optionally wipe the boot partition
 
 # Auto-discover LUKS device and boot partition
@@ -60,26 +61,26 @@ wipe_key(){
 
 wipe_partition(){
     # Erase all LUKS keyslots via cryptsetup — surgical, does not touch the rest of the disk
-    local DISK="$1"
+    local LUKS="$1"
     which cryptsetup > /dev/null 2>&1 || error "cryptsetup not found, please install it"
     if [ $DRY -eq 1 ]; then
-        echo "[DRYRUN]: erasing all LUKS keyslots on $DISK via cryptsetup"
-        echo "[DRYRUN]: cryptsetup erase $DISK"
+        echo "[DRYRUN]: erasing all LUKS keyslots on $LUKS via cryptsetup"
+        echo "[DRYRUN]: cryptsetup erase $LUKS"
     else
-        info "Erasing all LUKS keyslots on $DISK via cryptsetup, please wait..."
-        cryptsetup erase "$DISK"
+        info "Erasing all LUKS keyslots on $LUKS via cryptsetup, please wait..."
+        cryptsetup erase "$LUKS"
     fi
 }
 
 wipe_boot(){
     # Zero the boot partition entirely
-    local DISK="$1"
+    local BOOT="$1"
     if [ $DRY -eq 1 ]; then
-        echo "[DRYRUN]: zeroing boot partition $DISK"
-        echo "[DRYRUN]: dd if=/dev/zero of=$DISK bs=1M"
+        echo "[DRYRUN]: zeroing boot partition $BOOT"
+        echo "[DRYRUN]: dd if=/dev/zero of=$BOOT bs=1M"
     else
-        info "Zeroing boot partition $DISK, please wait..."
-        dd if=/dev/zero of=$DISK bs=1M
+        info "Zeroing boot partition $BOOT, please wait..."
+        dd if=/dev/zero of=$BOOT bs=1M
     fi
 }
 
