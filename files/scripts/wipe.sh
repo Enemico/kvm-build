@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Author: samba
 # Description: wipe the disk LUKS key OR erase LUKS keyslots, and optionally wipe the boot partition
 
 # Auto-discover LUKS device and boot partition
